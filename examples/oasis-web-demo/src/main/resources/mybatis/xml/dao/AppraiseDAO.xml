@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.xyz.chaos.examples.demo.repository.dao.AppraiseDAO" >
+    <select id="getProdRelated" resultMap="cn.xyz.chaos.examples.demo.repository.mapper.AppraiseMapper.BaseResultMap">
+    </select>
+    
+  <select id="selectBySelectiveWithRowbounds" parameterType="map" resultType="cn.xyz.chaos.examples.demo.entity.Comment">
+   	select 
+   	c.appraise_id appraiseId,
+   	c.user_id userId,
+   	u.email userName,
+   	c.prod_id prodId,
+   	p.prod_name prodName,
+   	c.content,
+   	c.score,
+   	c.add_time addTime
+   	from prod_info p, user_info u, appraise c	
+   	where 
+   	c.prod_id=p.prod_id and c.user_id=u.user_id
+   	<if test="appraise.userId !=null">
+   		and c.user_id=#{appraise.userId}
+   	</if>
+   	<if test="appraise.prodId !=null">
+   		and c.prod_id=#{appraise.prodId}
+   	</if>   	
+  </select> 
+  
+  <select id="selectByProdId" parameterType="int" resultType="cn.xyz.chaos.examples.demo.entity.Comment">
+   	select 
+   	a.appraise_id appraiseId,
+   	a.user_id userId,
+   	u.email userName,
+   	a.prod_id prodId,
+   	p.prod_name prodName,
+   	a.content,
+   	a.score,
+   	a.add_time addTime
+   	from appraise a,prod_info p,user_info u
+   	where 
+   	a.prod_id=p.prod_id and a.user_id=u.user_id and a.prod_id=#{prodId}  	
+  </select>   
+    
+</mapper>

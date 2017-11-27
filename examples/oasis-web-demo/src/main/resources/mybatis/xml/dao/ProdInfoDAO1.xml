@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.xyz.chaos.examples.demo.repository.ProdInfo1DAO">
+	<select id="selectProdInfoById" parameterType="int"
+		resultMap="cn.xyz.chaos.examples.demo.repository.mapper.ProdInfoMapper.ResultMapWithBLOBs">
+		select
+		<include refid="cn.xyz.chaos.examples.demo.repository.mapper.ProdInfoMapper.Base_Column_List" />
+		,
+		<include refid="cn.xyz.chaos.examples.demo.repository.mapper.ProdInfoMapper.Blob_Column_List" />
+		from prod_info where prod_id = ${prodId}
+	</select>
+</mapper>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration>
+  <!-- 驱动路径 -->
+  <classPathEntry location="D:\documents and settings\lvchenggang\.m2\repository\mysql\mysql-connector-java\5.1.30\mysql-connector-java-5.1.30.jar" />
+  
+  <context id="Mysql_17_77">
+  
+  	<!-- 自定义使用方式支持，包括DAO，扩展XML，注解等 -->
+    <plugin type="cn.xyz.chaos.orm.generator.plugins.CustomizeDaoSupportPlugin">
+      <property name="mapperAnnotation" value="cn.xyz.chaos.orm.mybatis.MyBatisRepository"/>
+      <property name="daoSuffix" value="DAO"/>
+      <property name="targetProject" value="E:/git/chaos/chaos-web-demo/src/main/java"/>
+      <property name="targetPackage" value="cn.xyz.chaos.examples.demo.repository.dao"/>
+      <property name="xmlTargetProject" value="E:/git/chaos/chaos-web-demo/src/main/resources"/>
+      <property name="xmlTargetPackage" value="context/mybatis/dao"/>
+    </plugin>
+    
+    <!-- 自动生成sql添加rowBounds支持 -->
+    <plugin type="org.mybatis.generator.plugins.RowBoundsPlugin" />
+    
+    <plugin type="cn.xyz.chaos.orm.generator.plugins.AdjustAllExamplePlugin">
+      <property name="searchString" value="Example"/>
+      <property name="replaceString" value="Criteria"/>
+      <property name="targetProject" value="E:/git/chaos/chaos-web-demo/src/main/java"/>
+      <property name="targetPackage" value="cn.xyz.chaos.examples.demo.entity.criteria"/>
+    </plugin>
+    
+  	<!-- 数据库连接 -->
+    <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://192.168.17.77:3306/chaos_demo?characterEncoding=utf-8" userId="chaos" password="chaos" />
+    
+    <!-- 数据库类型解析为JavaType -->
+    <javaTypeResolver type="cn.xyz.chaos.orm.generator.internal.types.NoShortJavaTypeResolver">
+        <property name="forceBigDecimals" value="false"/>
+    </javaTypeResolver>
+    
+    
+    <!-- entity 生成配置 -->
+	<javaModelGenerator targetPackage="cn.xyz.chaos.examples.demo.entity" targetProject="E:/git/chaos/chaos-web-demo/src/main/java" />
+    <!-- sqlMapper xml文件生成配置 -->
+	<sqlMapGenerator targetPackage="context/mybatis/mapper" targetProject="E:/git/chaos/chaos-web-demo/src/main/resources" />
+    <!-- sqlMapper 接口生成配置 -->
+	<javaClientGenerator targetPackage="cn.xyz.chaos.examples.demo.repository.mapper" targetProject="E:/git/chaos/chaos-web-demo/src/main/java" type="XMLMAPPER" />
+     
+    <!-- Table 映射配置 START  -->
+    
+    <!--<table tableName="appraise" domainObjectName="Appraise">
+      <property name="ignoreQualifiersAtRuntime" value="true"/>
+      <generatedKey column="appraise_id" sqlStatement="MySql" identity="true"/>
+    </table>
+    <table tableName="company_info" domainObjectName="CompanyInfo">
+      <property name="ignoreQualifiersAtRuntime" value="true"/>
+    </table>
+    <table tableName="favorite" domainObjectName="Favorite">
+      <property name="ignoreQualifiersAtRuntime" value="true"/>
+      <generatedKey column="favorite_id" sqlStatement="MySql" identity="true"/>
+    </table>
+    <table tableName="prod_info" domainObjectName="ProdInfo">
+      <property name="ignoreQualifiersAtRuntime" value="true"/>
+      <generatedKey column="prod_id" sqlStatement="MySql" identity="true"/>
+    </table>
+    <table tableName="prod_sku" domainObjectName="ProdSku">
+      <property name="ignoreQualifiersAtRuntime" value="true"/>
+      <generatedKey column="sku_id" sqlStatement="MySql" identity="true"/>
+    </table>
+     <table tableName="prod_sku_link" domainObjectName="ProdSkuLink">
+      <property name="ignoreQualifiersAtRuntime" value="true"/>
+      <generatedKey column="sku_link_id" sqlStatement="MySql" identity="true"/>
+    </table>
+    <table tableName="prod_sku_option" domainObjectName="ProdSkuOption">
+      <property name="ignoreQualifiersAtRuntime" value="true"/>
+      <generatedKey column="sku_option_id" sqlStatement="MySql" identity="true"/>
+    </table>
+    <table tableName="user_info" domainObjectName="UserInfo">
+      <property name="ignoreQualifiersAtRuntime" value="true"/>
+      <generatedKey column="user_id" sqlStatement="MySql" identity="true"/>
+    </table>-->
+    
+    <table tableName="my_test" domainObjectName="MyTest">
+      <property name="ignoreQualifiersAtRuntime" value="true"/>
+    </table>    
+    
+  </context>
+	
+</generatorConfiguration>

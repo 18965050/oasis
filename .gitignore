@@ -1,0 +1,35 @@
+# maven ignore
+target/
+*.jar
+*.war
+*.zip
+*.tar
+*.tar.gz
+
+# eclipse ignore
+.settings/
+.project
+.classpath
+*.launch
+
+# idea ignore
+.idea/
+*.ipr
+*.iml
+*.iws
+
+#jrebel ignore
+rebel.xml
+
+# temp ignore
+*.log
+*.cache
+*.diff
+*.patch
+*.tmp
+*.springBeans
+examples/chaos-web-demo/src/main/webapp/WEB-INF/cache/**/*.jpg
+
+# system ignore
+.DS_Store
+Thumbs.db

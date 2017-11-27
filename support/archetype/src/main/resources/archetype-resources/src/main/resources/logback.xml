@@ -1,0 +1,54 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration  
+	xmlns="http://www.chaos.com/logback.xsd">
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5p %c - %m%n</pattern>
+		</encoder>
+	</appender>
+	
+	<appender name="TRACE-APPENDER" class="ch.qos.logback.core.FileAppender">
+		<file>logs/chaos-trace.log</file>
+		<append>true</append>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5p %c - %m%n</pattern>
+		</encoder>
+	</appender>
+	
+	<logger name="TRACE" level="TRACE" additivity="false">
+		<appender-ref ref="TRACE-APPENDER"/>
+	</logger>	
+
+	<appender name="DEBUG-APPENDER" class="ch.qos.logback.core.FileAppender">
+		<file>logs/chaos-debug.log</file>
+		<append>true</append>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5p %c - %m%n</pattern>
+		</encoder>
+	</appender>
+	
+	<logger name="DEBUG" level="DEBUG" additivity="false">
+		<appender-ref ref="DEBUG-APPENDER"/>
+	</logger>	
+	
+	<appender name="INFO-APPENDER" class="ch.qos.logback.core.FileAppender">
+		<file>logs/chaos-info.log</file>
+		<append>true</append>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5p %c - %m%n</pattern>
+		</encoder>
+	</appender>
+	
+	<logger name="INFO" level="INFO" additivity="true">
+		<appender-ref ref="INFO-APPENDER"/>
+	</logger>			
+
+	<!-- root -->
+	<root level="INFO">
+		<appender-ref ref="STDOUT" />
+	</root>
+</configuration>

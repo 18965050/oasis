@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE ibatorConfiguration PUBLIC "-//Apache Software Foundation//DTD Apache iBATIS Ibator Configuration 1.0//EN"
+        "http://ibatis.apache.org/dtd/ibator-config_1_0.dtd" >
+<ibatorConfiguration>
+    <properties resource="ibatis/mysql/gc/ibatis-gc.properties"/>
+    <classPathEntry location="${classPathEntry.location}"/>
+    <ibatorContext id="mysql" targetRuntime="Ibatis2Java5">
+        <ibatorPlugin type="cn.xyz.chaos.orm.generator.plugins.TableAnnotationPlugin">
+            <!-- 用于匹配不同的数据源，与ibatis-spring.xml配置中的ibatisSqlMapClients配置项目保持一致 -->
+            <property name="defalutSchema" value="test"/>
+        </ibatorPlugin>
+        <!-- sqlmap的namespace默认为表名称，修改namespace使用entity类名 -->
+        <ibatorPlugin type="cn.xyz.chaos.orm.generator.plugins.DAOSupportPlugin">
+            <property name="namespaceUseEntity" value="false"/>
+            <property name="daoAnnotation" value="org.springframework.stereotype.Repository"/>
+            <property name="daoSuffix" value="DAO"/>
+        </ibatorPlugin>
+        <ibatorPlugin type="org.mybatis.generator.plugins.SqlMapConfigPlugin">
+            <property name="fileName" value="ibatis-config.xml"/>
+            <property name="targetPackage" value="ibatis/mysql"/>
+            <property name="targetProject" value="src/test/resources"/>
+        </ibatorPlugin>
+        <ibatorPlugin type="cn.xyz.chaos.orm.generator.plugins.RenameExampleClassPlugin">
+            <property name="searchString" value="Example"/>
+            <property name="replaceString" value="Criteria"/>
+        </ibatorPlugin>
+        <ibatorPlugin type="cn.xyz.chaos.orm.generator.plugins.JavaCommentPlugin"/>
+        <commentGenerator>
+            <property name="suppressAllComments" value="true"/>
+        </commentGenerator>
+        <jdbcConnection driverClass="${jdbcConnection.driverClass}" connectionURL="${jdbcConnection.connectionURL}"
+                        userId="${jdbcConnection.userId}" password="${jdbcConnection.password}">
+            <property name="remarksReporting" value="true"/>
+        </jdbcConnection>
+        <!-- 数据库类型解析为JavaType -->
+        <javaTypeResolver type="cn.xyz.chaos.orm.generator.internal.types.NoShortJavaTypeResolver">
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+
+        <javaModelGenerator targetPackage="cn.xyz.chaos.orm.ibatis.mysql.entity"
+                            targetProject="${targetProject.root}/src/test/java">
+            <property name="enableSubPackages" value="false"/>
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+        <sqlMapGenerator targetPackage="ibatis/mysql/sqlmap" targetProject="${targetProject.root}/src/test/resources"/>
+        <daoGenerator targetPackage="cn.xyz.chaos.orm.ibatis.mysql.dao"
+                      targetProject="${targetProject.root}/src/test/java" type="SPRING"/>
+        <table tableName="ss_task" escapeWildcards="true"/>
+        <table tableName="ss_user" escapeWildcards="true"/>
+    </ibatorContext>
+</ibatorConfiguration>

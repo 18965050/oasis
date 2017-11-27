@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration>
+    <properties resource="mybatis/mysql/gc/mybatis-gc.properties"/>
+    <!-- 官方文档： http://mybatis.github.io/generator/ -->
+    <!-- 驱动路径 -->
+    <classPathEntry location="${classPathEntry.location}"/>
+    <context id="localH2">
+        <!-- 自定义使用方式支持，包括DAO，扩展XML，注解等 -->
+        <plugin type="cn.xyz.chaos.orm.generator.plugins.CustomizeDaoSupportPlugin">
+            <property name="mapperAnnotation" value="cn.xyz.chaos.orm.mybatis.MyBatisRepository"/>
+            <property name="daoSuffix" value="DAO"/>
+            <property name="targetProject"
+                      value="${targetProject.root}/src/main/java"/>
+            <property name="targetPackage" value="cn.xyz.chaos.orm.mybatis.mysql.dao"/>
+            <property name="xmlTargetProject"
+                      value="${targetProject.root}/src/main/resources"/>
+            <property name="xmlTargetPackage" value="mybatis/dao"/>
+        </plugin>
+
+        <!-- 自动生成sql添加rowBounds支持 -->
+        <plugin type="org.mybatis.generator.plugins.RowBoundsPlugin"/>
+
+        <plugin type="cn.xyz.chaos.mybatis.generator.plugin.AdjustAllExamplePlugin">
+            <property name="searchString" value="Example"/>
+            <property name="replaceString" value="Criteria"/>
+            <property name="targetProject"
+                      value="${targetProject.root}/src/main/java"/>
+            <property name="targetPackage" value="cn.xyz.chaos.orm.mybatis.mysql.entity.criteria"/>
+        </plugin>
+
+        <!-- 数据库连接 -->
+        <jdbcConnection driverClass="${jdbcConnection.driverClass}" connectionURL="${jdbcConnection.connectionURL}"
+                        userId="${jdbcConnection.userId}" password="${jdbcConnection.password}">
+            <property name="remarksReporting" value="true"/>
+        </jdbcConnection>
+        <!-- 数据库类型解析为JavaType -->
+        <javaTypeResolver type="cn.xyz.chaos.orm.generator.internal.types.NoShortJavaTypeResolver">
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+
+
+        <!-- entity 生成配置 -->
+        <javaModelGenerator targetPackage="cn.xyz.chaos.orm.mybatis.mysql.entity"
+                            targetProject="${targetProject.root}/src/main/java"/>
+        <!-- sqlMapper xml文件生成配置 -->
+        <sqlMapGenerator targetPackage="mybatis/mapper"
+                         targetProject="${targetProject.root}/src/main/resources"/>
+        <!-- sqlMapper 接口生成配置 -->
+        <javaClientGenerator targetPackage="cn.xyz.chaos.orm.mybatis.mysql.mapper"
+                             targetProject="${targetProject.root}/src/main/java"
+                             type="XMLMAPPER"/>
+
+        <!-- Table 映射配置 START  -->
+        <table tableName="ss_task" escapeWildcards="true" catalog="test" modelType="flat">
+            <property name="ignoreQualifiersAtRuntime" value="true"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+        </table>
+        <table tableName="ss_user" escapeWildcards="true" catalog="test" modelType="flat"/>
+    </context>
+
+</generatorConfiguration>

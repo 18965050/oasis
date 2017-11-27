@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://dozer.sourceforge.net
+          http://dozer.sourceforge.net/schema/beanmapping.xsd">
+
+	<mapping map-id="prodDTO2prodInfo">
+		<class-a>cn.xyz.chaos.examples.demo.provider.dto.ProductDTO</class-a>
+		<class-b>cn.xyz.chaos.examples.demo.entity.ProdInfo</class-b>
+	</mapping>
+	
+	<mapping map-id="prodInfo2prodDTO">
+		<class-a>cn.xyz.chaos.examples.demo.entity.ProdInfo</class-a>
+		<class-b>cn.xyz.chaos.examples.demo.provider.dto.ProductDTO</class-b>
+		<field-exclude>
+			<a>prodPic</a>
+			<b>prodPic</b>
+		</field-exclude>
+	</mapping>	
+
+	<mapping map-id="prodAttr2prodAttrDTO">
+		<class-a>cn.xyz.chaos.examples.demo.entity.ProdAttrLink</class-a>
+		<class-b>cn.xyz.chaos.examples.demo.provider.dto.ProdAttrLinkDTO</class-b>
+	</mapping>
+
+	<mapping map-id="prod2prodDTO">
+		<class-a>cn.xyz.chaos.examples.demo.entity.Product</class-a>
+		<class-b>cn.xyz.chaos.examples.demo.provider.dto.ProductDTO</class-b>
+		<field-exclude>
+			<a>prodPic</a>
+			<b>prodPic</b>
+		</field-exclude>
+	</mapping>
+
+</mappings>

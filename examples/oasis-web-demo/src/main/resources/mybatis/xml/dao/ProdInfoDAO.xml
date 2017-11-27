@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.xyz.chaos.examples.demo.repository.dao.ProdInfoDAO">
+
+  <select id="listWithSKU" parameterType="map" resultMap="cn.xyz.chaos.examples.demo.repository.mapper.ProdInfoMapper.BaseResultMap">
+    SELECT
+      p.prod_id,
+      p.com_id,
+      p.prod_name,
+      p.prod_alias,
+      p.limit_quantity,
+      p.weight,
+      p.status,
+      p.adder_id,
+      p.updater_id,
+      p.add_time,
+      p.update_time 
+    FROM
+      prod_info p
+      <if test="optIds != null and !optIds.isEmpty">
+      <bind name="optSize" value="optIds.size"/>
+      WHERE p.`prod_id` IN
+        (SELECT 
+          psl.`prod_id` 
+        FROM
+          prod_sku_link psl 
+        WHERE psl.`sku_option_id` IN 
+        <foreach collection="optIds" open="(" close=")" separator="," item="optId">
+             #{optId}
+        </foreach>
+        GROUP BY psl.`prod_id` 
+        HAVING COUNT(*) = #{optSize})
+      </if>
+  </select>
+  
+  <select id="selectBySelectiveWithRowbounds" parameterType="map" resultType="cn.xyz.chaos.examples.demo.entity.Product">
+   	select 
+   	p.prod_id prodId,
+   	p.com_id comId,
+   	c.com_name comName,
+   	p.prod_name prodName,
+   	p.prod_alias prodAlias,
+	p.limit_quantity limitQuantity,
+	p.weight weight,
+	p.status status
+   	from prod_info p,company_info c	
+   	where 
+   	p.com_id=c.com_id
+   	<if test="prodInfo.comId !=null">
+   		and p.com_id=#{prodInfo.comId}
+   	</if>
+   	<if test="prodInfo.prodName !=null and prodInfo.prodName!=''">
+   		and p.prod_name like CONCAT("%",#{prodInfo.prodName},"%" )
+   	</if>   	
+  </select>  
+  
+  <select id="selectById" parameterType="int" resultType="cn.xyz.chaos.examples.demo.entity.Product">
+   	select 
+   	p.prod_id prodId,
+   	p.com_id comId,
+   	c.com_name comName,
+   	p.prod_name prodName,
+   	p.prod_alias prodAlias,
+   	p.prod_pic prodPic,
+	p.limit_quantity limitQuantity,
+	p.weight weight,
+	p.status status,
+	p.adder_id adderId,
+	p.add_time addTime,
+	p.updater_id updaterId,
+	p.update_time updateTime
+   	from prod_info p,company_info c	
+   	where 
+   	p.com_id=c.com_id and p.prod_id=#{prodId}  	
+  </select>    
+  
+  
+</mapper>

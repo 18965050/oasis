@@ -1,0 +1,4 @@
+<script src="${ctx}/assets/third-party/jquery-ui/jquery-ui.js"
+		charset="UTF-8"></script>
+<script src="${ctx}/assets/js/membercenter/product/detail.js"
+		charset="UTF-8"></script>	

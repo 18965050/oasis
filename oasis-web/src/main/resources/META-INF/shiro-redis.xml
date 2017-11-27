@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd"
+  default-lazy-init="true">
+
+  <description>Shiro 使用RedisCache 和 Session使用Redis存储部分示例配置</description>
+
+  <!-- ========自定义Session + RedisCache START ==================== -->
+  <!--redis配置-->
+  <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+    <property name="maxActive" value="40"/>
+    <property name="maxIdle" value="10"/>
+    <property name="minIdle" value="2"/>
+    <property name="maxWait" value="10"/>
+    <property name="testOnBorrow" value="true"/>
+  </bean>
+  <bean id="jedisPool" class="redis.clients.jedis.JedisPool" destroy-method="destroy" depends-on="jedisPoolConfig">
+    <constructor-arg name="poolConfig" ref="jedisPoolConfig"/>
+    <constructor-arg name="host" value="127.0.0.1"/>
+    <constructor-arg name="port" value="6379" />
+    <constructor-arg name="timeout" value="2000"/>
+    <constructor-arg name="password">
+      <null/>
+    </constructor-arg>
+  </bean>
+  <bean id="jedisTemplate" class="org.springside.modules.nosql.redis.JedisTemplate">
+    <constructor-arg ref="jedisPool"/>
+  </bean>
+  <!--cacheManager-->
+  <bean id="cacheManager" class="cn.xyz.chaos.mvc.shiro.cache.RedisCacheManager">
+    <property name="jedisTemplate" ref="jedisTemplate"/>
+    <property name="expireTime" value="1800"/>
+    <property name="expireEnable" value="true"/>
+    <property name="prefix" value="dm-RC:"/>
+  </bean>
+  <!--Session用的request级别缓存-->
+  <bean id="sessionCacheManager" class="cn.xyz.chaos.mvc.shiro.cache.SingleValueThreadLocalCacheManager"/>
+  <!--SessionDAO-->
+  <bean id="redisSessionDAO" class="cn.xyz.chaos.mvc.shiro.session.RedisCacheSessionDAO">
+    <constructor-arg name="jedisTemplate" ref="jedisTemplate"/>
+    <constructor-arg name="prefix" value="dm-S"/>
+    <property name="cacheManager" ref="sessionCacheManager"/>
+  </bean>
+  <!-- 全局Session内部属性配置，应用中可以通过new SessionInternalAttrConfig ，后apply -->
+  <bean id="attrConfig" class="cn.xyz.chaos.mvc.shiro.session.SessionInternalAttrConfig">
+    <property name="excludePatterns">
+      <list>
+        <value>^_s_.*</value>
+      </list>
+    </property>
+  </bean>
+  <!--SessionManager-->
+  <bean id="sessionManager" class="cn.xyz.chaos.mvc.shiro.session.mgt.XyzWebSessionManager">
+    <property name="sessionDAO" ref="redisSessionDAO"/>
+    <property name="globalSessionTimeout" value="1800000"/>
+    <property name="sessionValidationSchedulerEnabled" value="false"/>
+  </bean>
+  <!-- ========自定义Session + RedisCache END ==================== -->
+
+  <!-- 此处替换为项目自定义的Realm -->
+  <bean id="realm" class="org.apache.shiro.realm.SimpleAccountRealm">
+    <property name="authenticationCachingEnabled" value="true"/>
+    <property name="authorizationCachingEnabled" value="true"/>
+    <property name="name" value="dbr"/>
+  </bean>
+  <!--WEB Security 管理 -->
+  <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+    <property name="realm" ref="realm" />
+    <property name="sessionManager" ref="sessionManager"/>
+    <property name="cacheManager" ref="cacheManager"/>
+  </bean>
+  <!-- Security 过滤器链配置 -->
+  <bean id="shiroFilter" class="cn.xyz.chaos.mvc.shiro.CustomShiroFilterFactoryBean">
+    <property name="sessionDAO" ref="redisSessionDAO"/>
+    <property name="securityManager" ref="securityManager" />
+    <property name="loginUrl" value="/login" />
+    <property name="successUrl" value="/" />
+    <property name="filterChainDefinitions">
+      <value>
+        /favoicon.ico = anon
+        /login = authc
+        /logout = logout
+        /** = anon
+      </value>
+    </property>
+  </bean>
+  <!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
+  <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+
+</beans>

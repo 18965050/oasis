@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
+
+  <bean id="includeUrlMatcher" class="cn.xyz.chaos.mvc.web.RegexUrlMatcher">
+    <property name="matchList">
+      <list>
+        <value>^/admin.*$</value>
+        <value>^/token/token/form.*$</value>
+      </list>
+    </property>
+  </bean>
+  <bean id="excludeUrlMatcher" class="cn.xyz.chaos.mvc.web.RegexUrlMatcher">
+    <property name="matchList">
+      <list>
+        <value>^/admin/none.*$</value>
+        <value>^/token/token/formview$</value>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="tokenReader" class="cn.xyz.chaos.mvc.token.FormTokenReader">
+  </bean>
+
+  <bean id="tokenStrategy" class="cn.xyz.chaos.mvc.token.strategy.ServerStoreTokenStrategy">
+    <property name="clientTokenReader" ref="tokenReader"/>
+    <property name="expiration" value="900"/>
+    <property name="maxStoreTokenNum" value="10"/>
+    <property name="tokenKeyInSession" value="_s_:${app.name}:token"/>
+    <property name="needSync" value="false"/>
+  </bean>
+
+  <bean id="tokenManager" class="cn.xyz.chaos.mvc.token.TokenManager">
+    <property name="excludeMatcher" ref="excludeUrlMatcher"/>
+    <property name="includeMatcher" ref="includeUrlMatcher"/>
+    <property name="tokenStrategy" ref="tokenStrategy"/>
+  </bean>
+
+  <mvc:interceptors>
+    <bean class="cn.xyz.chaos.mvc.token.integration.TokenInterceptor">
+      <property name="tokenManager" ref="tokenManager"/>
+      <property name="redirectUrl" value="/"/>
+    </bean>
+  </mvc:interceptors>
+
+</beans>

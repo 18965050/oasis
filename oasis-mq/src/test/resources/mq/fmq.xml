@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+  <!-- properties 读入 -->
+  <bean id="properties"
+        class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+    <property name="locations">
+      <list>
+        <value>classpath:/properties/application-development.properties</value>
+      </list>
+    </property>
+  </bean>
+
+  <context:property-placeholder
+    ignore-resource-not-found="true" properties-ref="properties" />
+
+  <!-- 单例，消息发送者 -->
+  <bean id="producer" class="cn.xyz.chaos.mq.fmq.FmqProducerFactoryBean">
+    <property name="configMap">
+      <map>
+        <!-- [required]: broker 服务器地址列表，如"192.168.0.61:9092,192.168.0.117:9092,192.168.0.105:9092" -->
+        <entry key="bootstrapServer" value="${producer.bootstrapServer}" />
+        <!-- [required]: 客户端Id，用于识别谁是谁。前缀统一 xyz_ ，总体格式为 xyz_项目/业务线/模块_子业务线/子模块[_孙业务线/孙模块/功能...] -->
+        <!-- 如，'xyz_union_user_login', 'xyz_product_pack', 'xyz_user_admin_maintain' -->
+        <entry key="clientId" value="xyz_chaos" />
+        <!-- 当前环境 topic 后缀，用于在代码不该的情况下，同一个服务器中区分不用环境处理用 -->
+        <!-- 如，'_dev'、'_test_91'、'' -->
+        <entry key="topicSuffix" value="${producer.topicSuffix}" />
+        <!-- 其他 producer 参数, 通常情况下不用配置。如需额外配置可参照配置文档 -->
+        <entry key="maxBytesPerMsg" value="${producer.maxBytesPerMsg}" /><!-- 每条消息最大字节数，默认16384[16k] -->
+        <entry key="store_TimeOut" value="${producer.storeTimeOut}" /><!-- 超时时间 ms -->
+      </map>
+    </property>
+  </bean>
+
+  <!-- 配置针对 topic-groupId 组合的消息处理 -->
+  <bean id="loginMsgConfig" class="cn.xyz.chaos.mq.fmq.FmqConsumerConfig">
+    <!-- [required]: 处理那个 topic 下的消息。在消息发送时，new FmqMessage(String topic, ...) 指定消息属于哪个 topic  -->
+    <!-- 通常，topic 为 producer 方提供的常量，推荐用常量引用 -->
+    <constructor-arg name="topic" value="xyz_test_topic" />
+    <!-- [required]: groupId 代表消费者属于哪个业务分组。-->
+    <!-- 同一个分组下只会有一个 consumer 收到消息，即使线上集群多台应用在线也不会重复处里。不同业务组会分别收到消息，各自处理 -->
+    <constructor-arg name="groupId" value="xyz_chaos_test_junit" />
+    <!-- 最重要的消息处理的 bean，实现 AbstractMessageHandler 抽象方法的或实现 IMessageHandler 接口的 bean 即可  -->
+    <constructor-arg name="messageHandler">
+      <bean class="cn.xyz.chaos.mq.test.TestMessageHandler" />
+    </constructor-arg>
+    <!-- 其他 consumer 参数个性化配置，通常情况下不用配置。如需额外配置可参照配置文档 -->
+    <!-- 此处特定的配置，可以覆盖 consumerManager 中的全局配置 -->
+    <property name="extraProps" >
+      <props>
+        <prop key="fetch.thread.num" >1</prop>
+        <prop key="auto.commit.enable">false</prop>
+      </props>
+    </property>
+  </bean>
+
+  <!-- consumer 管理。可以配置所有 consumer 的通用配置-->
+  <bean id="consumerManager" class="cn.xyz.chaos.mq.fmq.FmqConsumerManager">
+    <!-- [required]: broker 服务器地址列表，如 "192.168.0.61:9092,192.168.0.117:9092,192.168.0.105:9092" -->
+    <property name="brokerListString" value="${consumer.metadata.broker.list}" />
+    <!-- [required]: zk地址列表，要填完整，如“192.168.0.61:2181,192.168.0.117:2181,192.168.0.105:2181” -->
+    <property name="zkListString" value="${consumer.zookeeper.connect}" />
+    <!-- [required]: 客户端Id，用于识别谁是谁。前缀统一 xyz_ ，总体格式为 xyz_项目/业务线/模块_子业务线/子模块[_孙业务线/孙模块/功能...] -->
+    <!-- 如，'xyz_union_user_login', 'xyz_product_pack', 'xyz_user_admin_maintain' -->
+    <property name="clientId" value="xyz_chaos" />
+    <!-- 当前环境 topic 后缀，用于在代码不该的情况下，同一个服务器中区分不用环境处理用 -->
+    <!-- 如，'_dev'、'_test_91'、'' -->
+    <property name="topicSuffix" value="${consumer.topicSuffix}" />
+    <!-- 其他 consumer 参数，通常情况下不用配置。如需额外配置可参照配置文档 -->
+    <!-- 此处的配置，如果和上面的配置含义相同，如 'client.Id' 和 上面的'clientId'，两个同时配置的情况下将使用上面的具体配置 -->
+    <!-- 不论 consumerManager 中在具体 property 处配置还是 extraCommonProps 中配置，都可以被特定的 FmqConsumerConfig 覆盖 -->
+    <property name="extraCommonProps">
+      <props>
+        <prop key="zookeeper.connection.timeout.ms">60000</prop>
+        <prop key="fetch.thread.num" >1</prop>
+      </props>
+    </property>
+    <!-- [required]: 必须把单独配置的 FmqConsumerConfig 加入到此处统一管理。否则 Consumer 不起作用 -->
+    <property name="consumerConfigs">
+      <!-- 每个 consumer 的配置加入到此处，统一处理 -->
+      <list>
+        <ref bean="loginMsgConfig" />
+      </list>
+    </property>
+  </bean>
+
+</beans>

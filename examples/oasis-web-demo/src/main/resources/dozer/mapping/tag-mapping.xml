@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://dozer.sourceforge.net
+          http://dozer.sourceforge.net/schema/beanmapping.xsd">
+
+	<mapping map-id="tagDTO2prodSku">
+		<class-a>cn.xyz.chaos.examples.demo.provider.dto.TagDTO</class-a>
+		<class-b>cn.xyz.chaos.examples.demo.entity.ProdSku</class-b>
+	</mapping>
+	
+	<mapping map-id="prodSku2tagDTO">
+		<class-a>cn.xyz.chaos.examples.demo.entity.ProdSku</class-a>
+		<class-b>cn.xyz.chaos.examples.demo.provider.dto.TagDTO</class-b>
+	</mapping>
+
+</mappings>

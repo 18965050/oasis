@@ -1,0 +1,13 @@
+<script src="${ctx}/assets/third-party/jquery-ui/jquery-ui.js"
+		charset="UTF-8"></script>	
+<script
+	src="${ctx}/assets/third-party/jqPagination/js/jquery.jqpagination.js"
+	charset="UTF-8"></script>
+<script src="${ctx}/assets/third-party/jquery-validation-1.13.0/jquery.validate.js"
+		charset="UTF-8"></script>
+<script src="${ctx}/assets/third-party/jquery-validation-1.13.0/localization/messages_zh.js"
+		charset="UTF-8"></script>	
+<script src="${ctx}/assets/js/addon-validate.js"
+		charset="UTF-8"></script>		
+<script src="${ctx}/assets/js/membercenter/tag/list.js"
+	charset="UTF-8"></script>

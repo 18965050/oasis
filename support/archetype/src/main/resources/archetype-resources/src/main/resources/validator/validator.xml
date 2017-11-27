@@ -1,0 +1,7 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+<?xml version="1.0" encoding="UTF-8"?>
+<validators>
+  <validator name="mail" extends="regex" regex="${symbol_escape}${symbol_escape}w+@${symbol_escape}${symbol_escape}w+${symbol_escape}${symbol_escape}.${symbol_escape}${symbol_escape}w+" />
+</validators>

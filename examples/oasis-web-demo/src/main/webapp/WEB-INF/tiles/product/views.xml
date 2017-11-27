@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE tiles-definitions PUBLIC  
+        "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"  
+        "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+
+    <definition name="tile_prod_template" template="/WEB-INF/views/product_tile/template.jsp">
+        <put-attribute name="prodDetail"     value="/WEB-INF/views/product_tile/prod_detail.jsp" />
+        <put-attribute name="prodOper"     value="/WEB-INF/views/product_tile/prod_oper.jsp" />
+		<put-attribute name="css"       value="/WEB-INF/views/product_tile/prod_css.jspf"/>
+		<put-attribute name="js"        value="/WEB-INF/views/product_tile/prod_js.jspf" />
+	</definition>
+	
+</tiles-definitions>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>cn.xyz</groupId>
+  <artifactId>oasis-bom</artifactId>
+  <version>0.5.8</version>
+  <packaging>pom</packaging>
+  <properties >
+    <oasis.version>0.5.8</oasis.version>
+  </properties>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>cn.xyz</groupId>
+        <artifactId>oasis-web</artifactId>
+        <version>${oasis.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>cn.xyz</groupId>
+        <artifactId>oasis-orm</artifactId>
+        <version>${oasis.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>cn.xyz</groupId>
+        <artifactId>oasis-validator</artifactId>
+        <version>${oasis.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>cn.xyz</groupId>
+        <artifactId>oasis-external</artifactId>
+        <version>${oasis.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>cn.xyz</groupId>
+        <artifactId>oasis-common</artifactId>
+        <version>${oasis.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>cn.xyz</groupId>
+        <artifactId>oasis-dubbo</artifactId>
+        <version>${oasis.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>cn.xyz</groupId>
+        <artifactId>oasis-mq</artifactId>
+        <version>${oasis.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <!--设定团队 发布仓库-->
+  <distributionManagement>
+    <repository>
+      <id>ins-releases</id>
+      <name>新一站 Release 仓库</name>
+      <url>http://maven.mic.com/nexus/content/repositories/ins-releases</url>
+    </repository>
+    <snapshotRepository>
+      <id>ins-releases</id>
+      <name>新一站 Snapshot 仓库</name>
+      <url>http://maven.mic.com/nexus/content/repositories/ins-snapshots</url>
+    </snapshotRepository>
+  </distributionManagement>
+
+  <modules>
+    <module>../</module>
+  </modules>
+
+</project>

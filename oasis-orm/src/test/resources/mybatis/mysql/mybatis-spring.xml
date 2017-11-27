@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.2.xsd
+
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd">
+
+    <!--||— MyBatis和spring集成的配置 STATRT —||-->
+
+    <!-- sqlSession配置 -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <!-- 自动扫描entity目录, 省掉Configuration.xml里的手工配置 -->
+        <property name="typeAliasesPackage" value="cn.xyz.chaos.orm.mybatis.mysql.entity"/>
+        <!-- 指定MyBatis配置文件 -->
+        <property name="configLocation" value="classpath:/mybatis/mysql/mybatis-config.xml"/>
+        <property name="mapperLocations" value="classpath:/mybatis/mysql/mapper/*.xml"/>
+    </bean>
+    <!-- 扫描basePackage下所有以@MyBatisRepository标识的 接口 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="cn.xyz.chaos.orm.mybatis.mysql"/>
+        <property name="annotationClass" value="cn.xyz.chaos.orm.mybatis.MyBatisRepository"/>
+    </bean>
+    <!--||__ MyBatis和spring集成的配置 END __||-->
+
+    <bean class="cn.xyz.chaos.orm.common.OrmContext">
+        <property name="sessions">
+            <map>
+                <entry key="test" value-ref="sqlSessionFactory"/>
+            </map>
+        </property>
+        <property name="conversionService">
+            <bean class="org.springframework.context.support.ConversionServiceFactoryBean"/>
+        </property>
+    </bean>
+    <bean class="cn.xyz.chaos.orm.sqlmap.impl.MyBatisSqlmapAspect"/>
+
+
+    <context:component-scan base-package="cn.xyz.chaos.orm.mybatis.mysql">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+    </context:component-scan>
+    <!--||__ IBatis和spring集成的配置 END __|| -->
+
+
+    <!-- 事务管理器配置 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!-- 使用annotation定义事务 -->
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+
+    <context:property-placeholder ignore-resource-not-found="true"
+                                  location="classpath*:/properties/application.mysql.properties"/>
+
+    <!-- Spring Simple连接池 -->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+        <property name="driverClass" value="${jdbc.driver}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+    </bean>
+
+    <!-- 初始化数据表结构 与默认数据-->
+    <jdbc:initialize-database data-source="dataSource" ignore-failures="ALL">
+        <jdbc:script location="classpath:sql/mysql/schema.sql"/>
+        <jdbc:script location="classpath:data/h2/import-data.sql" encoding="UTF-8"/>
+    </jdbc:initialize-database>
+</beans>

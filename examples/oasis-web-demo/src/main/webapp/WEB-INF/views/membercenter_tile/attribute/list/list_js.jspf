@@ -1,0 +1,6 @@
+<script
+	src="${ctx}/assets/third-party/jqPagination/js/jquery.jqpagination.js"
+	charset="UTF-8"></script>
+
+<script src="${ctx}/assets/js/membercenter/attribute/list.js"
+	charset="UTF-8"></script>

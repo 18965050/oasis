@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.xyz.chaos.examples.demo.repository.dao.ProdSkuOptionDAO" >
+
+  <select id="selectBySelectiveWithRowbounds" parameterType="map" resultType="cn.xyz.chaos.examples.demo.entity.Attribute">
+   	select 
+   	a.sku_option_id skuOptionId,
+   	t.sku_name skuName,
+   	a.option_name optionName,
+	a.weight
+   	from prod_sku_option a, prod_sku t	
+   	where 
+   	a.sku_id=t.sku_id
+   	<if test="attr.skuId !=null">
+   		and a.sku_id=#{attr.skuId}
+   	</if>
+   	<if test="attr.optionName !=null and attr.optionName!=''">
+   		and a.option_name like CONCAT("%",#{attr.optionName},"%" )
+   	</if>   	
+  </select>  
+  
+  <select id="selectById" parameterType="int" resultType="cn.xyz.chaos.examples.demo.entity.Attribute">
+   	select 
+   	a.sku_option_id skuOptionId,
+   	a.sku_id skuId,
+   	t.sku_name skuName,
+   	a.option_name optionName,
+   	a.weight 
+   	from prod_sku_option a,prod_sku t	
+   	where 
+   	a.sku_id=t.sku_id and a.sku_option_id=#{id}  	
+  </select>   
+  
+  <select id="selectByTagId" parameterType="int" resultType="cn.xyz.chaos.examples.demo.entity.Attribute">
+   	select 
+   	a.sku_option_id skuOptionId,
+   	a.sku_id skuId,
+   	t.sku_name skuName,
+   	a.option_name optionName,
+   	a.weight 
+   	from prod_sku_option a,prod_sku t	
+   	where 
+   	a.sku_id=t.sku_id and a.sku_id=#{tagId}  	
+  </select>    
+  
+
+</mapper>

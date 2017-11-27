@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.xyz.chaos.examples.demo.repository.dao.FavoriteDAO" >
+
+  <select id="selectByUserId" parameterType="int" resultType="cn.xyz.chaos.examples.demo.entity.FavoriteProd">
+   	select 
+   	f.favorite_id favoriteId,
+   	f.user_id userId,
+   	f.prod_id prodId,
+   	p.prod_name prodName,
+   	f.add_time addTime
+   	from favorite f,prod_info p
+   	where 
+   	f.prod_id=p.prod_id and f.user_id=#{userId}  	
+  </select> 
+
+</mapper>

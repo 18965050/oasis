@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.xyz.chaos.examples.demo.repository.dao.ProdSkuDAO">
+  
+   <resultMap id="ProdSkuModelMap" type="cn.xyz.chaos.examples.demo.entity.model.ProdSkuModel" extends="cn.xyz.chaos.examples.demo.repository.mapper.ProdSkuMapper.BaseResultMap">
+    <id column="sku_option_id" jdbcType="INTEGER" property="skuOptionId" />
+    <!-- <result column="sku_id" jdbcType="INTEGER" property="skuId" /> -->
+    <!-- <result column="sku_name" jdbcType="VARCHAR" property="skuName" /> -->
+    <result column="sku_id" jdbcType="INTEGER" property="skuId" />
+    <result column="option_name" jdbcType="VARCHAR" property="optionName" />
+    <result column="weight" jdbcType="INTEGER" property="weight" />
+  </resultMap>
+
+  <select id="selectSkusAndOpts" resultMap="ProdSkuModelMap">
+    SELECT 
+      ps.`sku_id`,
+      ps.`sku_name`,
+      pso.`sku_option_id`,
+      pso.`option_name`,
+      pso.`weight` 
+    FROM
+      prod_sku ps 
+      LEFT JOIN prod_sku_option pso 
+        ON ps.`sku_id` = pso.`sku_id` 
+  </select>
+  
+  
+	<select id="selectAll"  resultMap="cn.xyz.chaos.examples.demo.repository.mapper.ProdSkuMapper.BaseResultMap">
+    	select 
+    	<include refid="cn.xyz.chaos.examples.demo.repository.mapper.ProdSkuMapper.Base_Column_List" />
+    	from prod_sku
+  	</select>  
+  
+  
+</mapper>

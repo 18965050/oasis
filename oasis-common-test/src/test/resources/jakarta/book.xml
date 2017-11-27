@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<books xmlns="http://cn.xyz.gaeo.jakarta.commons/book"
+	xmlns:author="http://cn.xyz.gaeo.jakarta.commons/author">
+	<book name="How-to-be A Good Man" >
+		<author:author name="lcg" favoriteColor="blue" />
+	</book>
+</books>
+
+
+       

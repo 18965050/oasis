@@ -1,0 +1,151 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+	<!-- 自动扫描且只扫描@Controller -->
+	<context:component-scan base-package="${package}.web" use-default-filters="false">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+		<context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+	</context:component-scan>
+
+    <!-- 自定义Validator -->
+    <bean id="validator" class="cn.xyz.chaos.validator.spring.EasyValidator" />
+
+    <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+      <property name="converters">
+        <list>
+          <bean class="cn.xyz.chaos.mvc.converter.StringTrimmerConverter"></bean>
+          <bean class="cn.xyz.chaos.mvc.converter.StringDateConverter">
+            <property name="datePattern" value="yyyy-MM-dd HH:mm:ss" />
+          </bean>
+        </list>
+      </property>
+    </bean>
+
+	<mvc:annotation-driven content-negotiation-manager="contentNegotiationManager" conversion-service="conversionService" validator="validator">
+		<mvc:message-converters register-defaults="true">
+			<!-- 将StringHttpMessageConverter的默认编码设为UTF-8 -->
+			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+		    	<constructor-arg value="UTF-8" />
+			</bean>
+			<!-- 将Jackson2HttpMessageConverter的默认格式化输出设为true -->
+			<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                <property name="prettyPrint" value="true"/>
+            </bean>
+  		</mvc:message-converters>
+		<mvc:argument-resolvers>
+			<bean class="cn.xyz.chaos.mvc.window.support.WindowAsyncArgumentResolver" />
+		</mvc:argument-resolvers>
+	</mvc:annotation-driven>
+
+    <mvc:interceptors>
+        <bean class="cn.xyz.chaos.mvc.spring.DevCocInterceptor" />
+        <bean class="cn.xyz.chaos.validator.spring.EasyValidatorInterceptor" />
+        <bean  class="cn.xyz.chaos.mvc.log.RequestExecutionTimeConsumptionInterceptor">
+        	<property name="prefixList">
+        		<list>
+        			<value>/assets</value>
+        		</list>
+        	</property>
+        	<property name="suffixList">
+        		<list>
+        			<value>jpg</value>
+        			<value>png</value>
+        			<value>js</value>
+        		</list>
+        	</property>
+        </bean>
+    </mvc:interceptors>
+
+<!--
+	<bean class="org.springframework.context.support.ResourceBundleMessageSource" id="messageSource">
+		<property name="basename" value="classpath:messages/messages" />
+        <property name="useCodeAsDefaultMessage" value="false"/>
+        <property name="defaultEncoding" value="UTF-8"/>
+	</bean>
+ -->
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="basenames">
+            <list>
+                <value>classpath:messages/messages</value>
+                <value>classpath:messages/ValidationMessages</value>
+            </list>
+        </property>
+        <property name="useCodeAsDefaultMessage" value="false"/>
+        <property name="defaultEncoding" value="UTF-8"/>
+        <property name="cacheSeconds" value="60"/>
+    </bean>
+
+    <!-- REST中根据URL后缀自动判定Content-Type及相应的View -->
+	<bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+	    <property name="mediaTypes" >
+	        <value>
+	            json=application/json
+	            xml=application/xml
+	        </value>
+	    </property>
+	</bean>
+
+	<!--spring 对velocity文件的映射 -->
+	<!--<bean id="velocityViewResolver" class="org.springframework.web.servlet.view.velocity.VelocityViewResolver">
+		<property name="suffix" value=".vm"></property>
+		<property name="exposeRequestAttributes" value="true"></property>
+		<property name="exposeSessionAttributes" value="true"></property>
+		<property name="requestContextAttribute" value="reqCtx"></property>
+		<property name="contentType" value="text/html;charset=UTF-8"></property>
+		<property name="order" value="0"></property>
+	</bean>-->
+	<!-- velocity的配置 -->
+	<!--<bean id="velocityConfigure" class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
+		<property name="configLocation" value="classpath:velocity/velocity.properties"></property>
+		<property name="resourceLoaderPath" value="/WEB-INF/views/"></property>
+		<property name="velocityProperties">
+			<props>
+				<prop key="input.encoding">UTF-8</prop>
+				<prop key="output.encoding">UTF-8></prop>
+			</props>
+		</property>
+	</bean>-->
+
+	<!-- 定义JSP文件的位置 -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/WEB-INF/views/"/>
+		<property name="suffix" value=".jsp"/>
+		<property name="order" value="1" />
+	</bean>
+
+	<!-- 容器默认的DefaultServletHandler处理 所有静态内容与无RequestMapping处理的URL-->
+	<mvc:default-servlet-handler/>
+
+	<!-- 定义无需Controller的url<->view直接映射 -->
+	<mvc:view-controller path="/" view-name="index"/>
+
+	<!-- 将Controller抛出的异常转到特定View, 保持SiteMesh的装饰效果 -->
+	<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="exceptionMappings">
+			<props>
+				<prop key="org.apache.shiro.authz.UnauthorizedException">error/403</prop>
+				<prop key="java.lang.Throwable">error/500</prop>
+            </props>
+		</property>
+    </bean>
+
+	<!-- 支持 Shiro对Controller的方法级AOP安全控制  begin-->
+	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor">
+		<property name="proxyTargetClass" value="true" />
+	</bean>
+
+	<bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+    	<property name="securityManager" ref="securityManager"/>
+	</bean>
+	<!-- end -->
+</beans>

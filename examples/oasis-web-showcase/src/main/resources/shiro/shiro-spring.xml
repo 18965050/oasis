@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd"
+       default-lazy-init="true">
+
+  <description>Shiro安全配置</description>
+
+  <!-- 证书匹配（用户名密码KEY验证） -->
+  <bean id="credentialsMatcher" class="cn.xyz.chaos.examples.showcase.authc.KeyUsernamePwdCredentialsMatcher"></bean>
+
+  <!-- 项目自定义的Realm -->
+  <bean id="realm" class="cn.xyz.chaos.examples.showcase.authc.DemoRealm">
+    <property name="credentialsMatcher" ref="credentialsMatcher" />
+    <property name="authenticationCachingEnabled" value="${shiro.auth.cache}"/>
+    <property name="authorizationCachingEnabled" value="${shiro.auz.cache}"/>
+    <property name="authenticationCacheName" value="${shiro.auth.cache.name}"/>
+    <property name="authorizationCacheName" value="${shiro.auz.cache.name}"/>
+    <property name="name" value="dbr"/>
+  </bean>
+
+  <!-- 登录认证Filter -->
+  <bean id="keyFormAuthenticationFilter" class="cn.xyz.chaos.examples.showcase.authc.KeyFormAuthenticationFilter">
+    <property name="failureKeyAttribute" value="loginErrorMsg"/>
+  </bean>
+
+  <!-- Security 过滤器链配置 -->
+  <bean id="shiroFilter" class="cn.xyz.chaos.mvc.shiro.CustomShiroFilterFactoryBean">
+    <property name="sessionDAO" ref="redisSessionDAO"/>
+    <property name="securityManager" ref="securityManager"/>
+    <property name="loginUrl" value="${authLoginUrl}"/>
+    <property name="successUrl" value="${successUrl}"/>
+    <property name="unauthorizedUrl" value="${unauthorizedUrl}"/>
+    <property name="filters">
+      <map>
+        <entry key="authc" value-ref="keyFormAuthenticationFilter"/>
+      </map>
+    </property>
+    <property name="filterChainDefinitions">
+      <value>
+        /favoicon.ico = anon
+        /auth/auth/login = authc
+        /logout = logout
+        /membercenter/** =authc
+        /** = anon
+      </value>
+    </property>
+  </bean>
+
+  <!-- 设置Session Cookie Name -->
+  <bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+    <property name="name" value="${session.cookie.name}"/>
+  </bean>
+
+  <!-- ========自定义Session + RedisCache START ==================== -->
+  <!--redis配置-->
+  <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+    <property name="maxActive" value="${session.jedis.pool.maxActive}"/>
+    <property name="maxIdle" value="${session.jedis.pool.maxIdle}"/>
+    <property name="minIdle" value="${session.jedis.pool.minIdle}"/>
+    <property name="maxWait" value="${session.jedis.pool.maxWait}"/>
+    <property name="testOnBorrow" value="${session.jedis.pool.testOnBorrow}"/>
+  </bean>
+  <bean id="jedisPool" class="redis.clients.jedis.JedisPool" destroy-method="destroy" depends-on="jedisPoolConfig">
+    <constructor-arg name="poolConfig" ref="jedisPoolConfig"/>
+    <constructor-arg name="host" value="${session.redis.host}"/>
+    <constructor-arg name="port" value="${session.redis.port}" />
+    <constructor-arg name="timeout" value="${session.redis.timeout}"/>
+    <constructor-arg name="password">
+      <null/>
+    </constructor-arg>
+    <constructor-arg name="database" value="${session.redis.database}"/>
+  </bean>
+  <bean id="jedisTemplate" class="org.springside.modules.nosql.redis.JedisTemplate">
+    <constructor-arg ref="jedisPool"/>
+  </bean>
+  <!--cacheManager-->
+  <bean id="cacheManager" class="cn.xyz.chaos.mvc.shiro.cache.RedisCacheManager">
+    <property name="jedisTemplate" ref="jedisTemplate"/>
+    <property name="expireTime" value="${shiro.cache.time}"/>
+    <property name="expireEnable" value="${shiro.cache.expireEnable}"/>
+    <property name="prefix" value="${shiro.cache.prefix}"/>
+  </bean>
+  <!--Session用的request级别缓存-->
+  <bean id="sessionCacheManager" class="cn.xyz.chaos.mvc.shiro.cache.SingleValueThreadLocalCacheManager"/>
+  <!--SessionDAO-->
+  <bean id="redisSessionDAO" class="cn.xyz.chaos.mvc.shiro.session.RedisCacheSessionDAO" depends-on="attrConfig">
+    <constructor-arg name="jedisTemplate" ref="jedisTemplate"/>
+    <constructor-arg name="prefix" value="${app.name}:${session.prefix}"/>
+    <property name="cacheManager" ref="sessionCacheManager"/>
+  </bean>
+  <!-- 全局Session内部属性配置，应用中可以通过new SessionInternalAttrConfig ，后apply -->
+  <bean id="attrConfig" class="cn.xyz.chaos.mvc.shiro.session.SessionInternalAttrConfig">
+  <property name="excludePatterns">
+      <list>
+        <value>^_s_.*</value>
+      </list>
+    </property>
+  </bean>
+  <!--SessionManager-->
+  <bean id="sessionManager" class="cn.xyz.chaos.mvc.shiro.session.mgt.XyzWebSessionManager">
+    <property name="sessionIdCookie" ref="sessionIdCookie"/>
+    <property name="sessionDAO" ref="redisSessionDAO"/>
+    <property name="globalSessionTimeout" value="${session.timeout}"/>
+    <property name="sessionValidationSchedulerEnabled" value="${session.validate.enable}"/>
+  </bean>
+  <!-- ========自定义Session + RedisCache END ==================== -->
+
+  <!--WEB Security 管理 -->
+  <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+    <property name="realm" ref="realm"/>
+    <property name="sessionManager" ref="sessionManager"/>
+    <property name="cacheManager" ref="cacheManager"/>
+  </bean>
+
+  <!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
+  <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+
+</beans>

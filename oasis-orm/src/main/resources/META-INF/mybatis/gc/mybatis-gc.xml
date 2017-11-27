@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration>
+    <properties resource="mybatis/mysql/gc/mybatis-gc.properties"/>
+    <classPathEntry location="${classPathEntry.location}"/>
+    <context id="mysql">
+        <plugin type="cn.xyz.chaos.orm.generator.plugins.DAOSupportPlugin">
+            <!-- sqlmap的namespace默认为表名称，修改namespace使用entity类名 -->
+            <property name="namespaceUseEntity" value="true"/>
+            <property name="daoAnnotation" value="cn.xyz.chaos.orm.mybatis.MyBatisRepository"/>
+            <property name="daoSuffix" value="DAO"/>
+        </plugin>
+        <plugin type="cn.xyz.chaos.orm.generator.plugins.TableAnnotationPlugin">
+            <property name="namespaceUseEntity" value="true"/>
+            <property name="defalutSchema" value="test"/>
+        </plugin>
+        <!-- 自动生成sql添加rowBounds支持 -->
+        <plugin type="org.mybatis.generator.plugins.RowBoundsPlugin"/>
+        <plugin type="cn.xyz.chaos.orm.generator.plugins.RenameExampleClassPlugin">
+            <property name="searchString" value="Example"/>
+            <property name="replaceString" value="Criteria"/>
+        </plugin>
+        <!-- 添加Java文件相关注释 -->
+        <plugin type="cn.xyz.chaos.orm.generator.plugins.JavaCommentPlugin"/>
+        <commentGenerator>
+            <!-- 屏蔽默认所有注释 -->
+            <property name="suppressAllComments" value="true"/>
+        </commentGenerator>
+        <!-- 数据库连接 -->
+        <jdbcConnection driverClass="${jdbcConnection.driverClass}" connectionURL="${jdbcConnection.connectionURL}"
+                        userId="${jdbcConnection.userId}" password="${jdbcConnection.password}">
+            <property name="remarksReporting" value="true"/>
+        </jdbcConnection>
+        <!-- 数据库类型解析为JavaType -->
+        <javaTypeResolver type="cn.xyz.chaos.orm.generator.internal.types.NoShortJavaTypeResolver">
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+
+
+        <!-- entity 生成配置 -->
+        <javaModelGenerator targetPackage="cn.xyz.chaos.orm.mybatis.mysql.entity"
+                            targetProject="${targetProject.root}/src/test/java"/>
+        <!-- sqlMapper xml文件生成配置 -->
+        <sqlMapGenerator targetPackage="mybatis/mysql/mapper" targetProject="${targetProject.root}/src/test/resources"/>
+        <!-- sqlMapper 接口生成配置 -->
+        <javaClientGenerator targetPackage="cn.xyz.chaos.orm.mybatis.mysql.dao"
+                             targetProject="${targetProject.root}/src/test/java"
+                             type="XMLMAPPER"/>
+
+        <table tableName="ss_task" escapeWildcards="true" catalog="test" modelType="flat" />
+        <table tableName="ss_user" escapeWildcards="true" catalog="test" modelType="flat" />
+    </context>
+
+</generatorConfiguration>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.xyz.chaos.examples.demo.repository.dao.ProdSkuLinkDAO" >
+	
+  <select id="getProdAttrs" parameterType="int" resultType="cn.xyz.chaos.examples.demo.entity.ProdAttrLink">
+   	select 
+   	l.sku_link_id skuLinkId,
+   	l.prod_id prodId,
+   	p.prod_name prodName,
+   	l.sku_option_id skuOptionId,
+   	a.option_name attrName
+   	from prod_sku_link l,prod_info p, prod_sku_option a
+   	where l.prod_id=p.prod_id and l.sku_option_id=a.sku_option_id and l.prod_id=#{prodId}
+  </select>   
+  
+ <delete id="deleteByTagId" parameterType="int">
+    delete from prod_sku_link 
+    where sku_option_id in (select sku_option_id from prod_sku_option where sku_id=#{tagId})
+  </delete>  
+  
+
+</mapper>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<validators>
+    <validator name="mail" extends="regex" regex="\\w+@\\w+\\.[a-z]+(\\.[a-z]+)?" />
+    <!-- http://www.2cto.com/kf/201207/138811.html -->
+    <validator name="mobile" extends="regex" regex="\\w+@\\w+\\.[a-z]+(\\.[a-z]+)?" />
+    <validator name="zipcode" extends="regex" regex="[1-9]\\d{5}" />
+    <validator name="chinese" extends="regex" regex="^[\u4E00-\u9FA5]+$" />
+    <!-- 验证整数（正整数和负整数） -->
+    <validator name="digit" extends="regex" regex="\\-?[1-9]\\d+" />
+    <!-- 验证整数和浮点数（正负整数和正负浮点数） -->
+    <validator name="decimals" extends="regex" regex="\\-?[1-9]\\d+(\\.\\d+)?" />
+
+</validators>

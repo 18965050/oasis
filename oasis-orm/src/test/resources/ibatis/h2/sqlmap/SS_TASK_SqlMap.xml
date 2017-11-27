@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="SS_TASK">
+    <resultMap id="BaseResultMap" class="cn.xyz.chaos.orm.ibatis.h2.entity.SsTask">
+        <result column="ID" property="id" jdbcType="BIGINT"/>
+        <result column="TITLE" property="title" jdbcType="VARCHAR"/>
+        <result column="DESCRIPTION" property="description" jdbcType="VARCHAR"/>
+        <result column="USER_ID" property="userId" jdbcType="BIGINT"/>
+    </resultMap>
+    <sql id="Criteria_Where_Clause">
+        <iterate property="oredCriteria" conjunction="or" prepend="where" removeFirstPrepend="iterate">
+            <isEqual property="oredCriteria[].valid" compareValue="true">
+                (
+                <iterate prepend="and" property="oredCriteria[].criteriaWithoutValue" conjunction="and">
+                    $oredCriteria[].criteriaWithoutValue[]$
+                </iterate>
+                <iterate prepend="and" property="oredCriteria[].criteriaWithSingleValue" conjunction="and">
+                    $oredCriteria[].criteriaWithSingleValue[].condition$
+                    #oredCriteria[].criteriaWithSingleValue[].value#
+                </iterate>
+                <iterate prepend="and" property="oredCriteria[].criteriaWithListValue" conjunction="and">
+                    $oredCriteria[].criteriaWithListValue[].condition$
+                    <iterate property="oredCriteria[].criteriaWithListValue[].values" open="(" close=")"
+                             conjunction=",">
+                        #oredCriteria[].criteriaWithListValue[].values[]#
+                    </iterate>
+                </iterate>
+                <iterate prepend="and" property="oredCriteria[].criteriaWithBetweenValue" conjunction="and">
+                    $oredCriteria[].criteriaWithBetweenValue[].condition$
+                    #oredCriteria[].criteriaWithBetweenValue[].values[0]# and
+                    #oredCriteria[].criteriaWithBetweenValue[].values[1]#
+                </iterate>
+                )
+            </isEqual>
+        </iterate>
+    </sql>
+    <sql id="Base_Column_List">
+        ID, TITLE, DESCRIPTION, USER_ID
+    </sql>
+    <select id="selectByCriteria" resultMap="BaseResultMap"
+            parameterClass="cn.xyz.chaos.orm.ibatis.h2.entity.SsTaskCriteria">
+        select
+        <isParameterPresent>
+            <isEqual property="distinct" compareValue="true">
+                distinct
+            </isEqual>
+        </isParameterPresent>
+        <include refid="SS_TASK.Base_Column_List"/>
+        from SS_TASK
+        <isParameterPresent>
+            <include refid="SS_TASK.Criteria_Where_Clause"/>
+            <isNotNull property="orderByClause">
+                order by $orderByClause$
+            </isNotNull>
+        </isParameterPresent>
+    </select>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterClass="cn.xyz.chaos.orm.ibatis.h2.entity.SsTask">
+        select
+        <include refid="SS_TASK.Base_Column_List"/>
+        from SS_TASK
+        where ID = #id:BIGINT#
+    </select>
+    <delete id="deleteByPrimaryKey" parameterClass="cn.xyz.chaos.orm.ibatis.h2.entity.SsTask">
+        delete from SS_TASK
+        where ID = #id:BIGINT#
+    </delete>
+    <delete id="deleteByCriteria" parameterClass="cn.xyz.chaos.orm.ibatis.h2.entity.SsTaskCriteria">
+        delete from SS_TASK
+        <include refid="SS_TASK.Criteria_Where_Clause"/>
+    </delete>
+    <insert id="insert" parameterClass="cn.xyz.chaos.orm.ibatis.h2.entity.SsTask">
+        insert into SS_TASK (ID, TITLE, DESCRIPTION, USER_ID)
+        values (#id:BIGINT#, #title:VARCHAR#, #description:VARCHAR#, #userId:BIGINT#)
+    </insert>
+    <insert id="insertSelective" parameterClass="cn.xyz.chaos.orm.ibatis.h2.entity.SsTask">
+        insert into SS_TASK
+        <dynamic prepend="(">
+            <isNotNull prepend="," property="id">
+                ID
+            </isNotNull>
+            <isNotNull prepend="," property="title">
+                TITLE
+            </isNotNull>
+            <isNotNull prepend="," property="description">
+                DESCRIPTION
+            </isNotNull>
+            <isNotNull prepend="," property="userId">
+                USER_ID
+            </isNotNull>
+            )
+        </dynamic>
+        values
+        <dynamic prepend="(">
+            <isNotNull prepend="," property="id">
+                #id:BIGINT#
+            </isNotNull>
+            <isNotNull prepend="," property="title">
+                #title:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="description">
+                #description:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="userId">
+                #userId:BIGINT#
+            </isNotNull>
+            )
+        </dynamic>
+    </insert>
+    <select id="countByCriteria" parameterClass="cn.xyz.chaos.orm.ibatis.h2.entity.SsTaskCriteria"
+            resultClass="java.lang.Integer">
+        select count(*) from SS_TASK
+        <include refid="SS_TASK.Criteria_Where_Clause"/>
+    </select>
+    <update id="updateByCriteriaSelective">
+        update SS_TASK
+        <dynamic prepend="set">
+            <isNotNull prepend="," property="record.id">
+                ID = #record.id:BIGINT#
+            </isNotNull>
+            <isNotNull prepend="," property="record.title">
+                TITLE = #record.title:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="record.description">
+                DESCRIPTION = #record.description:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="record.userId">
+                USER_ID = #record.userId:BIGINT#
+            </isNotNull>
+        </dynamic>
+        <isParameterPresent>
+            <include refid="SS_TASK.Criteria_Where_Clause"/>
+        </isParameterPresent>
+    </update>
+    <update id="updateByCriteria">
+        update SS_TASK
+        set ID = #record.id:BIGINT#,
+        TITLE = #record.title:VARCHAR#,
+        DESCRIPTION = #record.description:VARCHAR#,
+        USER_ID = #record.userId:BIGINT#
+        <isParameterPresent>
+            <include refid="SS_TASK.Criteria_Where_Clause"/>
+        </isParameterPresent>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterClass="cn.xyz.chaos.orm.ibatis.h2.entity.SsTask">
+        update SS_TASK
+        <dynamic prepend="set">
+            <isNotNull prepend="," property="title">
+                TITLE = #title:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="description">
+                DESCRIPTION = #description:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="userId">
+                USER_ID = #userId:BIGINT#
+            </isNotNull>
+        </dynamic>
+        where ID = #id:BIGINT#
+    </update>
+    <update id="updateByPrimaryKey" parameterClass="cn.xyz.chaos.orm.ibatis.h2.entity.SsTask">
+        update SS_TASK
+        set TITLE = #title:VARCHAR#,
+        DESCRIPTION = #description:VARCHAR#,
+        USER_ID = #userId:BIGINT#
+        where ID = #id:BIGINT#
+    </update>
+</sqlMap>

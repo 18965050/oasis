@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity class="cn.xyz.chaos.examples.demo.provider.dto.ProdInfoDTO">
+  <fields>
+    <field property="prodName">
+      <valid name="required" msg="用户名不能为空" />
+      <valid name="length" min="4" max="16" msg="用户名长度为4-16个字符" />
+      <valid name="regex" regex="\w+" msg="用户名为字符a-z,1-9,_" />
+    </field>
+    <field property="prodAlias">
+      <valid name="length" min="1" max="8" msg="部门编号1-8" />
+    </field>
+    <field property="deptCode">
+      <valid name="required" msg="部门不能为空" />
+      <valid name="length" min="8" max="8" msg="部门编号错误" />
+      <valid name="regex" regex="\d+" msg="部门编号错误" />
+    </field>
+  </fields>
+  <groups>
+    <group name="default">
+      <field property="prodName" />
+    </group>
+    <group name="xxx" extends="default">
+      <field property="prodAlias" />
+    </group>
+  </groups>
+</entity>

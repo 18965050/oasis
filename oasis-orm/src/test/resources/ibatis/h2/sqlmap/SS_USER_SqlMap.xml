@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="SS_USER">
+    <resultMap id="BaseResultMap" class="cn.xyz.chaos.orm.ibatis.h2.entity.SsUser">
+        <result column="ID" property="id" jdbcType="BIGINT"/>
+        <result column="LOGIN_NAME" property="loginName" jdbcType="VARCHAR"/>
+        <result column="NAME" property="name" jdbcType="VARCHAR"/>
+        <result column="PASSWORD" property="password" jdbcType="VARCHAR"/>
+        <result column="SALT" property="salt" jdbcType="VARCHAR"/>
+        <result column="ROLES" property="roles" jdbcType="VARCHAR"/>
+        <result column="REGISTER_DATE" property="registerDate" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Criteria_Where_Clause">
+        <iterate property="oredCriteria" conjunction="or" prepend="where" removeFirstPrepend="iterate">
+            <isEqual property="oredCriteria[].valid" compareValue="true">
+                (
+                <iterate prepend="and" property="oredCriteria[].criteriaWithoutValue" conjunction="and">
+                    $oredCriteria[].criteriaWithoutValue[]$
+                </iterate>
+                <iterate prepend="and" property="oredCriteria[].criteriaWithSingleValue" conjunction="and">
+                    $oredCriteria[].criteriaWithSingleValue[].condition$
+                    #oredCriteria[].criteriaWithSingleValue[].value#
+                </iterate>
+                <iterate prepend="and" property="oredCriteria[].criteriaWithListValue" conjunction="and">
+                    $oredCriteria[].criteriaWithListValue[].condition$
+                    <iterate property="oredCriteria[].criteriaWithListValue[].values" open="(" close=")"
+                             conjunction=",">
+                        #oredCriteria[].criteriaWithListValue[].values[]#
+                    </iterate>
+                </iterate>
+                <iterate prepend="and" property="oredCriteria[].criteriaWithBetweenValue" conjunction="and">
+                    $oredCriteria[].criteriaWithBetweenValue[].condition$
+                    #oredCriteria[].criteriaWithBetweenValue[].values[0]# and
+                    #oredCriteria[].criteriaWithBetweenValue[].values[1]#
+                </iterate>
+                )
+            </isEqual>
+        </iterate>
+    </sql>
+    <sql id="Base_Column_List">
+        ID, LOGIN_NAME, NAME, PASSWORD, SALT, ROLES, REGISTER_DATE
+    </sql>
+    <select id="selectByCriteria" resultMap="BaseResultMap"
+            parameterClass="cn.xyz.chaos.orm.ibatis.h2.entity.SsUserCriteria">
+        select
+        <isParameterPresent>
+            <isEqual property="distinct" compareValue="true">
+                distinct
+            </isEqual>
+        </isParameterPresent>
+        <include refid="SS_USER.Base_Column_List"/>
+        from SS_USER
+        <isParameterPresent>
+            <include refid="SS_USER.Criteria_Where_Clause"/>
+            <isNotNull property="orderByClause">
+                order by $orderByClause$
+            </isNotNull>
+        </isParameterPresent>
+    </select>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterClass="cn.xyz.chaos.orm.ibatis.h2.entity.SsUser">
+        select
+        <include refid="SS_USER.Base_Column_List"/>
+        from SS_USER
+        where ID = #id:BIGINT#
+    </select>
+    <delete id="deleteByPrimaryKey" parameterClass="cn.xyz.chaos.orm.ibatis.h2.entity.SsUser">
+        delete from SS_USER
+        where ID = #id:BIGINT#
+    </delete>
+    <delete id="deleteByCriteria" parameterClass="cn.xyz.chaos.orm.ibatis.h2.entity.SsUserCriteria">
+        delete from SS_USER
+        <include refid="SS_USER.Criteria_Where_Clause"/>
+    </delete>
+    <insert id="insert" parameterClass="cn.xyz.chaos.orm.ibatis.h2.entity.SsUser">
+        insert into SS_USER (ID, LOGIN_NAME, NAME, PASSWORD, SALT,
+        ROLES, REGISTER_DATE)
+        values (#id:BIGINT#, #loginName:VARCHAR#, #name:VARCHAR#, #password:VARCHAR#, #salt:VARCHAR#,
+        #roles:VARCHAR#, #registerDate:TIMESTAMP#)
+    </insert>
+    <insert id="insertSelective" parameterClass="cn.xyz.chaos.orm.ibatis.h2.entity.SsUser">
+        insert into SS_USER
+        <dynamic prepend="(">
+            <isNotNull prepend="," property="id">
+                ID
+            </isNotNull>
+            <isNotNull prepend="," property="loginName">
+                LOGIN_NAME
+            </isNotNull>
+            <isNotNull prepend="," property="name">
+                NAME
+            </isNotNull>
+            <isNotNull prepend="," property="password">
+                PASSWORD
+            </isNotNull>
+            <isNotNull prepend="," property="salt">
+                SALT
+            </isNotNull>
+            <isNotNull prepend="," property="roles">
+                ROLES
+            </isNotNull>
+            <isNotNull prepend="," property="registerDate">
+                REGISTER_DATE
+            </isNotNull>
+            )
+        </dynamic>
+        values
+        <dynamic prepend="(">
+            <isNotNull prepend="," property="id">
+                #id:BIGINT#
+            </isNotNull>
+            <isNotNull prepend="," property="loginName">
+                #loginName:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="name">
+                #name:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="password">
+                #password:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="salt">
+                #salt:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="roles">
+                #roles:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="registerDate">
+                #registerDate:TIMESTAMP#
+            </isNotNull>
+            )
+        </dynamic>
+    </insert>
+    <select id="countByCriteria" parameterClass="cn.xyz.chaos.orm.ibatis.h2.entity.SsUserCriteria"
+            resultClass="java.lang.Integer">
+        select count(*) from SS_USER
+        <include refid="SS_USER.Criteria_Where_Clause"/>
+    </select>
+    <update id="updateByCriteriaSelective">
+        update SS_USER
+        <dynamic prepend="set">
+            <isNotNull prepend="," property="record.id">
+                ID = #record.id:BIGINT#
+            </isNotNull>
+            <isNotNull prepend="," property="record.loginName">
+                LOGIN_NAME = #record.loginName:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="record.name">
+                NAME = #record.name:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="record.password">
+                PASSWORD = #record.password:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="record.salt">
+                SALT = #record.salt:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="record.roles">
+                ROLES = #record.roles:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="record.registerDate">
+                REGISTER_DATE = #record.registerDate:TIMESTAMP#
+            </isNotNull>
+        </dynamic>
+        <isParameterPresent>
+            <include refid="SS_USER.Criteria_Where_Clause"/>
+        </isParameterPresent>
+    </update>
+    <update id="updateByCriteria">
+        update SS_USER
+        set ID = #record.id:BIGINT#,
+        LOGIN_NAME = #record.loginName:VARCHAR#,
+        NAME = #record.name:VARCHAR#,
+        PASSWORD = #record.password:VARCHAR#,
+        SALT = #record.salt:VARCHAR#,
+        ROLES = #record.roles:VARCHAR#,
+        REGISTER_DATE = #record.registerDate:TIMESTAMP#
+        <isParameterPresent>
+            <include refid="SS_USER.Criteria_Where_Clause"/>
+        </isParameterPresent>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterClass="cn.xyz.chaos.orm.ibatis.h2.entity.SsUser">
+        update SS_USER
+        <dynamic prepend="set">
+            <isNotNull prepend="," property="loginName">
+                LOGIN_NAME = #loginName:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="name">
+                NAME = #name:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="password">
+                PASSWORD = #password:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="salt">
+                SALT = #salt:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="roles">
+                ROLES = #roles:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="registerDate">
+                REGISTER_DATE = #registerDate:TIMESTAMP#
+            </isNotNull>
+        </dynamic>
+        where ID = #id:BIGINT#
+    </update>
+    <update id="updateByPrimaryKey" parameterClass="cn.xyz.chaos.orm.ibatis.h2.entity.SsUser">
+        update SS_USER
+        set LOGIN_NAME = #loginName:VARCHAR#,
+        NAME = #name:VARCHAR#,
+        PASSWORD = #password:VARCHAR#,
+        SALT = #salt:VARCHAR#,
+        ROLES = #roles:VARCHAR#,
+        REGISTER_DATE = #registerDate:TIMESTAMP#
+        where ID = #id:BIGINT#
+    </update>
+</sqlMap>

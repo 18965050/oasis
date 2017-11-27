@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.xyz.chaos.examples.demo.repository.Appraise1DAO">
+	<select id="selectByProdId" parameterType="int"
+		resultMap="cn.xyz.chaos.examples.demo.repository.mapper.AppraiseMapper.BaseResultMap">
+		select
+		<include refid="cn.xyz.chaos.examples.demo.repository.mapper.AppraiseMapper.Base_Column_List" />
+		from appraise where prod_id = ${prodId}
+	</select>
+</mapper>

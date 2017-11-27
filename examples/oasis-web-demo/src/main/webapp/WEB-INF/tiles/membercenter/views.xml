@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC
+	"-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+	"http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+
+    <definition name="tile_company_list" extends="tile_mc_template">
+        <put-attribute name="title"     value="保险公司列表" />
+        <put-attribute name="body"  value="/WEB-INF/views/membercenter_tile/company/list/list.jsp" />
+        <put-attribute name="css"  value="/WEB-INF/views/membercenter_tile/company/list/list_css.jspf"/>
+        <put-attribute name="js"  value="/WEB-INF/views/membercenter_tile/company/list/list_js.jspf"/>
+    </definition>
+    
+    <definition name="tile_company_add" extends="tile_mc_template">
+        <put-attribute name="title"     value="新增保险公司" />
+        <put-attribute name="body"  value="/WEB-INF/views/membercenter_tile/company/input/input.jsp" />
+        <put-attribute name="css"  value="/WEB-INF/views/membercenter_tile/company/input/input_css.jspf"/>
+        <put-attribute name="js"  value="/WEB-INF/views/membercenter_tile/company/input/input_js.jspf"/>
+    </definition> 
+    
+    <definition name="tile_company_update" extends="tile_mc_template">
+        <put-attribute name="title"     value="修改保险公司" />
+        <put-attribute name="body"  value="/WEB-INF/views/membercenter_tile/company/input/input.jsp" />
+        <put-attribute name="css"  value="/WEB-INF/views/membercenter_tile/company/input/input_css.jspf"/>
+        <put-attribute name="js"  value="/WEB-INF/views/membercenter_tile/company/input/input_js.jspf"/>
+    </definition>             
+    
+    <definition name="tile_company_detail" extends="tile_mc_template">
+        <put-attribute name="title"     value="保险公司详情" />
+        <put-attribute name="body"  value="/WEB-INF/views/membercenter_tile/company/detail/detail.jsp" />
+    </definition>     	  
+    
+	<definition name="tile_tag_list" extends="tile_mc_template">
+        <put-attribute name="title"     value="标签列表" />
+	    <put-attribute name="body"	value="/WEB-INF/views/membercenter_tile/tag/list.jsp" />
+        <put-attribute name="css"  value="/WEB-INF/views/membercenter_tile/tag/list_css.jspf"/>
+        <put-attribute name="js"  value="/WEB-INF/views/membercenter_tile/tag/list_js.jspf"/>	    
+	</definition>  	     
+    
+	<definition name="tile_attribute_list" extends="tile_mc_template">
+        <put-attribute name="title"     value="属性列表" />
+	    <put-attribute name="body"	value="/WEB-INF/views/membercenter_tile/attribute/list/list.jsp" />
+        <put-attribute name="css"  value="/WEB-INF/views/membercenter_tile/attribute/list/list_css.jspf"/>
+        <put-attribute name="js"  value="/WEB-INF/views/membercenter_tile/attribute/list/list_js.jspf"/>	    
+	</definition>  
+	
+	<definition name="tile_attribute_add" extends="tile_mc_template">
+        <put-attribute name="title"     value="新增属性" />
+	    <put-attribute name="body"	value="/WEB-INF/views/membercenter_tile/attribute/input/input.jsp" />
+        <put-attribute name="css"  value="/WEB-INF/views/membercenter_tile/attribute/input/input_css.jspf"/>
+        <put-attribute name="js"  value="/WEB-INF/views/membercenter_tile/attribute/input/input_js.jspf"/>	    
+	</definition>  	
+	
+	<definition name="tile_attribute_update" extends="tile_mc_template">
+        <put-attribute name="title"     value="修改属性" />
+	    <put-attribute name="body"	value="/WEB-INF/views/membercenter_tile/attribute/input/input.jsp" />
+        <put-attribute name="css"  value="/WEB-INF/views/membercenter_tile/attribute/input/input_css.jspf"/>
+        <put-attribute name="js"  value="/WEB-INF/views/membercenter_tile/attribute/input/input_js.jspf"/>	    
+	</definition>  
+	
+	<definition name="tile_attribute_detail" extends="tile_mc_template">
+        <put-attribute name="title"     value="属性详情" />
+	    <put-attribute name="body"	value="/WEB-INF/views/membercenter_tile/attribute/detail/detail.jsp" />   
+	</definition> 	
+	
+	<definition name="tile_product_list" extends="tile_mc_template">
+        <put-attribute name="title"     value="产品列表" />
+	    <put-attribute name="body"	value="/WEB-INF/views/membercenter_tile/product/list/list.jsp" />
+        <put-attribute name="css"  value="/WEB-INF/views/membercenter_tile/product/list/list_css.jspf"/>
+        <put-attribute name="js"  value="/WEB-INF/views/membercenter_tile/product/list/list_js.jspf"/>	    
+	</definition>  
+	
+	<definition name="tile_product_add" extends="tile_mc_template">
+        <put-attribute name="title"     value="新增产品" />
+	    <put-attribute name="body"	value="/WEB-INF/views/membercenter_tile/product/input/input.jsp" />
+	    <put-attribute name="css"  value="/WEB-INF/views/membercenter_tile/product/input/input_css.jspf"/>
+        <put-attribute name="js"  value="/WEB-INF/views/membercenter_tile/product/input/input_js.jspf"/>
+	</definition>  
+	
+	<definition name="tile_product_bind" extends="tile_mc_template">
+        <put-attribute name="title"     value="绑定属性" />
+	    <put-attribute name="body"	value="/WEB-INF/views/membercenter_tile/product/bind/bind.jsp" />
+	    <put-attribute name="css"  value="/WEB-INF/views/membercenter_tile/product/bind/bind_css.jspf"/>
+        <put-attribute name="js"  value="/WEB-INF/views/membercenter_tile/product/bind/bind_js.jspf"/>
+	</definition>  	 
+	
+	<definition name="tile_product_update" extends="tile_mc_template">
+        <put-attribute name="title"     value="修改产品" />
+	    <put-attribute name="body"	value="/WEB-INF/views/membercenter_tile/product/input/input.jsp" />
+	    <put-attribute name="css"  value="/WEB-INF/views/membercenter_tile/product/input/input_css.jspf"/>
+        <put-attribute name="js"  value="/WEB-INF/views/membercenter_tile/product/input/input_js.jspf"/>
+	</definition>  		
+	
+    <definition name="tile_product_detail" extends="tile_mc_template">
+        <put-attribute name="title"     value="产品详情" />
+        <put-attribute name="body"  value="/WEB-INF/views/membercenter_tile/product/detail/detail.jsp" />
+        <put-attribute name="css"  value="/WEB-INF/views/membercenter_tile/product/detail/detail_css.jspf" />
+        <put-attribute name="js"  value="/WEB-INF/views/membercenter_tile/product/detail/detail_js.jspf" />
+    </definition> 	 
+    
+    <definition name="tile_comment_list" extends="tile_mc_template">
+        <put-attribute name="title"     value="评论列表" />
+        <put-attribute name="body"  value="/WEB-INF/views/membercenter_tile/comment/list/list.jsp" />
+        <put-attribute name="css"  value="/WEB-INF/views/membercenter_tile/comment/list/list_css.jspf"/>
+        <put-attribute name="js"  value="/WEB-INF/views/membercenter_tile/comment/list/list_js.jspf"/>
+    </definition>    
+
+</tiles-definitions>

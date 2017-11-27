@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://dozer.sourceforge.net
+          http://dozer.sourceforge.net/schema/beanmapping.xsd">
+
+	<mapping map-id="commentDTO2appraise">
+		<class-a>cn.xyz.chaos.examples.demo.provider.dto.CommentDTO</class-a>
+		<class-b>cn.xyz.chaos.examples.demo.entity.Appraise</class-b>
+	</mapping>
+	
+	<mapping map-id="comment2commentDTO">
+		<class-a>cn.xyz.chaos.examples.demo.entity.Comment</class-a>
+		<class-b>cn.xyz.chaos.examples.demo.provider.dto.CommentDTO</class-b>
+	</mapping>
+	
+	<mapping map-id="appraise2commentDTO">
+		<class-a>cn.xyz.chaos.examples.demo.entity.Appraise</class-a>
+		<class-b>cn.xyz.chaos.examples.demo.provider.dto.CommentDTO</class-b>
+	</mapping>	
+
+</mappings>

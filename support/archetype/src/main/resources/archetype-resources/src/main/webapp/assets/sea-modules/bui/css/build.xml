@@ -1,0 +1,81 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+<?xml version="1.0" encoding="utf-8"?>
+<project name="bui.css.build" default="build" basedir=".">
+	
+	<property name="tools.dir" location="../../tools/"/>
+    <property name="build.dir" location="./"/>
+	<property name="less.dir" location="./less"/>
+    <property name="component.files" value="*"/>
+    <property name="charset" value="UTF-8"/>
+	
+	
+	<target name="build" depends="prepare,less,compress.css">
+    </target>
+	<target name="prepare">
+        <delete>
+			<fileset dir="${symbol_dollar}{build.dir}" includes="**/*.css"/>
+        </delete>
+    </target>
+
+	<target name="less">
+	
+		<exec executable="node" failonerror="true">
+			<arg line="${symbol_dollar}{tools.dir}/less/bin/lessc ${symbol_dollar}{less.dir}/base/dpl.less ${symbol_dollar}{build.dir}/dpl.css"/>
+		</exec>
+		
+		<exec executable="node" failonerror="true">
+			<arg line="${symbol_dollar}{tools.dir}/less/bin/lessc ${symbol_dollar}{less.dir}/bui/controls.less ${symbol_dollar}{build.dir}/bui.css"/>
+		</exec>
+		<exec executable="node" failonerror="true">
+			<arg line="${symbol_dollar}{tools.dir}/less/bin/lessc ${symbol_dollar}{less.dir}/extend/extend.less ${symbol_dollar}{build.dir}/extend.css"/>
+		</exec>
+	
+		<exec executable="node" failonerror="true">
+			<arg line="${symbol_dollar}{tools.dir}/less/bin/lessc ${symbol_dollar}{less.dir}/single/calendar.less ${symbol_dollar}{build.dir}/calendar.css"/>
+		</exec>
+		<exec executable="node" failonerror="true">
+		  <arg line="${symbol_dollar}{tools.dir}/less/bin/lessc ${symbol_dollar}{less.dir}/single/overlay.less ${symbol_dollar}{build.dir}/overlay.css"/>
+		</exec>
+	    <exec executable="node" failonerror="true">
+		  <arg line="${symbol_dollar}{tools.dir}/less/bin/lessc ${symbol_dollar}{less.dir}/single/tab.less ${symbol_dollar}{build.dir}/tab.css"/>
+		</exec>
+		<exec executable="node" failonerror="true">
+		  <arg line="${symbol_dollar}{tools.dir}/less/bin/lessc ${symbol_dollar}{less.dir}/single/menu.less ${symbol_dollar}{build.dir}/menu.css"/>
+		</exec>
+
+		<exec executable="node" failonerror="true">
+		  <arg line="${symbol_dollar}{tools.dir}/less/bin/lessc ${symbol_dollar}{less.dir}/single/select.less ${symbol_dollar}{build.dir}/select.css"/>
+		</exec>
+
+		<exec executable="node" failonerror="true">
+		  <arg line="${symbol_dollar}{tools.dir}/less/bin/lessc ${symbol_dollar}{less.dir}/single/slider.less ${symbol_dollar}{build.dir}/slider.css"/>
+		</exec>
+
+		<exec executable="node" failonerror="true">
+		  <arg line="${symbol_dollar}{tools.dir}/less/bin/lessc ${symbol_dollar}{less.dir}/single/grid.less ${symbol_dollar}{build.dir}/grid.css"/>
+		</exec>
+
+		<exec executable="node" failonerror="true">
+		  <arg line="${symbol_dollar}{tools.dir}/less/bin/lessc ${symbol_dollar}{less.dir}/single/layout.less ${symbol_dollar}{build.dir}/layout.css"/>
+		</exec>
+
+	<!--		-->
+	</target>
+	
+	<!-- 用 YUICompressor 压缩 CSS -->
+    <target name="compress.css"> 	        
+        <apply executable="java" verbose="true" dest="${symbol_dollar}{build.dir}">
+			<fileset dir="${symbol_dollar}{build.dir}" includes="**/*.css"/>
+            <arg line="-jar"/>
+            <arg path="${symbol_dollar}{tools.dir}/yuicompressor.jar"/>
+            <arg line="--charset ${symbol_dollar}{charset}"/>
+            <srcfile/>
+            <arg line="-o"/>
+            <targetfile/>
+            <mapper type="regexp" from="^(.*)${symbol_escape}.(css)${symbol_dollar}" to="${symbol_escape}1-min.${symbol_escape}2"/>
+        </apply>
+    </target>
+
+</project>

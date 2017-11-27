@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity class="cn.xyz.chaos.examples.demo.provider.dto.CompanyDTO">
+  <fields>
+    <field property="comName">
+      <valid name="required" msg="公司名不能为空" />
+      <valid name="length" min="4" max="50" msg="公司名长度为4-50个字符" />
+    </field>
+    </fields>
+  <groups>
+    <group name="default">
+      <field property="comName" />
+    </group>
+  </groups>
+</entity>

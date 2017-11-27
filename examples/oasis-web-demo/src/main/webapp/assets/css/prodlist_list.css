@@ -1,0 +1,54 @@
+@CHARSET "UTF-8";
+/* 左标题 */
+#pageTitle{
+  margin-top: 0px;
+}
+#pageTitle #pageSize{
+  bottom: 0;
+  right: 0;
+  position: absolute;
+  text-align: right;
+}
+#pageTitle > div{
+  position: relative;
+}
+/* 已选择SKU */
+#selSkuRow{
+  margin-left: 0;
+}
+#selSkuRow .selSkuNam{
+  float: left;
+}
+#selSkuRow .selSkuNam span{
+  line-height: 30px;
+  font-size: 16px;
+}
+#selSkuRow .crumbAttr{
+  height: 22px;
+  line-height: 21px;
+  margin: 4px 0 4px 10px;
+  padding-right: 9px;
+  border-radius: 2px;
+  border: 1px dotted #c40000;
+  padding-left: 9px;
+}
+/* sku选择 */
+.skuRow{
+}
+.skuRow .skuName{
+  width: 10%;
+  float: left;
+}
+.skuRow .skuValueDiv span:hover{
+    cursor: pointer;
+}
+/* 产品列表 */
+.prodFeature {
+  margin-top: 20px;
+  font-size: 25px;
+  color: rgb(94, 228, 169);
+}
+
+#prodList div .pagination{
+    margin: -15px 0 20px 0;
+}

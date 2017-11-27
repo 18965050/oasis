@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="cn.xyz.chaos.orm.ibatis.h2.dao.SsTaskDAO">
+    <select id="getAll" resultMap="SS_TASK.BaseResultMap">
+        select * from ss_task where id >  #id:BIGINT#
+    </select>
+</sqlMap>

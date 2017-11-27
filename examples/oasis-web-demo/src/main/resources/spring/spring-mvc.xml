@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <context:property-placeholder location="classpath*:properties/auth.properties"/>
+
+	<!-- 自动扫描且只扫描@Controller -->
+	<context:component-scan base-package="cn.xyz.chaos.examples.demo.web" use-default-filters="false">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Service" />
+		<context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+	</context:component-scan>
+
+	<!-- 自定义Validator -->
+	<bean id="validator" class="cn.xyz.chaos.validator.spring.EasyValidator" />
+	<bean id="validatorConfReload" class="cn.xyz.chaos.validator.spring.EasyValidatorConfReload" />
+
+	<!-- 数据类型转换. Spring3 之前使用PropertyEditor, 3之后提供了Converter接口 -->
+	<bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+		<property name="converters">
+			<list>
+				<bean class="cn.xyz.chaos.mvc.converter.StringTrimmerConverter"></bean>
+				<bean class="cn.xyz.chaos.mvc.converter.StringDateConverter">
+					<property name="datePattern" value="yyyy-MM-dd HH:mm:ss" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<!-- SpringMVC 之 Controller请求annotation方式转发  -->
+	<mvc:annotation-driven content-negotiation-manager="contentNegotiationManager" conversion-service="conversionService" validator="validator">
+		<!-- 消息转换器, 用于处理@RequestBody,RequestEntity和请求报文,@ResponseBody,ResponseEntity和响应报文之间的转换. -->
+		<mvc:message-converters register-defaults="true">
+			<!-- 将StringHttpMessageConverter的默认编码设为UTF-8 -->
+			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+				<constructor-arg value="UTF-8" />
+			</bean>
+			<!-- 将Jackson2HttpMessageConverter的默认格式化输出设为true -->
+			<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+				<property name="prettyPrint" value="true" />
+			</bean>
+		</mvc:message-converters>
+		<mvc:argument-resolvers>
+			<bean class="cn.xyz.chaos.mvc.window.support.WindowAsyncArgumentResolver" />
+		</mvc:argument-resolvers>
+	</mvc:annotation-driven>
+
+	<!-- 拦截器配置 -->
+   <mvc:interceptors>
+       <bean id="securityAnnotationInterceptor" class="cn.xyz.chaos.mvc.shiro.spring.RequiresAuthcAnnotationInterceptor" >
+           <property name="loginUrl" value="${authLoginUrl}" />
+       </bean>
+       <bean class="cn.xyz.chaos.validator.spring.EasyValidatorInterceptor" />
+       <bean class="cn.xyz.chaos.mvc.spring.DevCocInterceptor" />
+       <bean class="cn.xyz.chaos.mvc.log.RequestExecutionTimeConsumptionInterceptor"/>
+    </mvc:interceptors>
+
+    <!-- REST中根据URL后缀自动判定Content-Type及相应的View -->
+	<bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+	    <property name="mediaTypes" >
+	        <value>
+	            json=application/json
+	            xml=application/xml
+	        </value>
+	    </property>
+	</bean>
+
+	<!-- JSP ViewResolver配置  -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/views/"/>
+		<property name="suffix" value=".jsp"/>
+	</bean>
+
+	<!-- 容器默认的DefaultServletHandler处理 所有静态内容与无RequestMapping处理的URL-->
+	<mvc:default-servlet-handler/>
+	<!-- 定义作为资源文件访问, 可定义多个 -->
+	<mvc:resources location="/WEB-INF/cache/" mapping="/cache/**" />
+
+	<!-- 定义无需Controller处理, 直接经ViewResolver处理, 可定义多个 -->
+	<mvc:view-controller path="/" view-name="index"/>
+
+	<!-- 文件上传支持类 -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="10485760"/>
+		<property name="defaultEncoding" value="UTF-8" />
+	</bean>
+
+	<!-- DispatcherServlet中异常抛出和View映射类 -->
+	<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="exceptionMappings">
+			<props>
+				<prop key="org.apache.shiro.authz.UnauthorizedException">${unauthorizedView}</prop>
+				<prop key="org.apache.shiro.authz.UnauthenticatedException">${unauthorizedView}</prop>
+				<prop key="java.lang.Throwable">error/500</prop>
+            </props>
+		</property>
+    </bean>
+
+	<!-- Advisor(Advice+PointCut)自动注入到符合的切入点Bean -->
+	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor">
+		<property name="proxyTargetClass" value="true" />
+	</bean>
+
+	<!-- 支持 Shiro对Bean的注解认证与鉴权. 注意: 如果要给MVC Bean添加此注解, 必须配置在此文件中 -->
+	<bean class="cn.xyz.chaos.mvc.shiro.AuthorizationAttributeSourceExtendAdvisor">
+    	<property name="securityManager" ref="securityManager"/>
+	</bean>
+
+</beans>

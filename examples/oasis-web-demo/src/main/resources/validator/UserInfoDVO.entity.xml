@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity class="cn.xyz.chaos.examples.demo.web.dvo.UserInfoDVO">
+    <fields>
+        <field property="email">
+            <valid name="required" msg="email不能为空" />
+            <valid name="length" min="4" max="50" msg="email长度为4-50个字符" />
+           <!-- <valid name="mail" args="\w+" msg="email格式不正确" />-->
+        </field>
+        <field property="password">
+            <valid name="required" msg="password不能为空" />
+            <valid name="length" min="1" max="30" msg="密码长度1-30" />
+        </field>
+        <field property="rptPassword">
+            <valid name="required" msg="重复密码不能为空" />
+            <valid name="length" min="1" max="30" msg="密码长度1-30" />
+        </field>
+    </fields>
+    <groups>
+        <group name="register">
+            <field property="email" />
+            <field property="password" />
+            <field property="rptPassword" />
+        </group>
+    </groups>
+</entity>

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
+
+  <bean id="abuseExcludeUrlMatcher" class="cn.xyz.chaos.mvc.web.RegexUrlMatcher">
+    <property name="matchList">
+      <list>
+        <value>^/abuse/abuse/unlock.*$</value>
+      </list>
+    </property>
+  </bean>
+  <bean id="abuseRedisStore" class="cn.xyz.chaos.mvc.abuse.store.RedisStore">
+    <property name="name" value="sc:ab:"/>
+    <property name="jedisTemplate" ref="jedisTemplate"/>
+  </bean>
+  <bean id="abuseInfoKeeper" class="cn.xyz.chaos.mvc.abuse.AbuseInfoKeeper">
+    <property name="store" ref="abuseRedisStore"/>
+    <property name="ipExpiration" value="1200"/>
+  </bean>
+  <bean id="abuseManager" class="cn.xyz.chaos.mvc.abuse.AbuseManager">
+    <property name="excludeMatcher" ref="abuseExcludeUrlMatcher"/>
+    <property name="infoKeeper" ref="abuseInfoKeeper"/>
+    <property name="discriminators">
+      <list>
+        <ref bean="spiderDiscriminator"/>
+        <ref bean="registeredIPDiscriminator"/>
+        <ref bean="normalRequestDiscriminator"/>
+      </list>
+    </property>
+    <property name="abuseHandlers">
+      <list>
+        <ref bean="spiderHandler"/>
+        <ref bean="registeredIPHandler"/>
+        <ref bean="ipSessionRateHandler"/>
+      </list>
+    </property>
+  </bean>
+
+  <!--鉴别器-->
+  <bean id="abuseLocker" class="cn.xyz.chaos.mvc.abuse.AbuseLocker">
+    <property name="store" ref="abuseRedisStore"/>
+  </bean>
+  <bean id="spiderDiscriminator" class="cn.xyz.chaos.mvc.abuse.discriminator.SpiderDiscriminator">
+    <property name="legalSpiderAgents">
+      <list>
+        <!--爬虫Agent 包含，不区分大小写-->
+        <value>BaiDuSpider</value>
+        <value>Googlebot</value>
+        <value>Sosospider</value>
+        <value>Sogou web spider</value>
+        <value>sougou spider</value>
+        <value>YoudaoBot</value>
+        <value>360spider</value>
+      </list>
+    </property>
+  </bean>
+  <bean id="registeredIPDiscriminator" class="cn.xyz.chaos.mvc.abuse.discriminator.RegisteredIPDiscriminator">
+    <property name="legalIps">
+      <list>
+        <!--IP 白名单-->
+        <value></value>
+      </list>
+    </property>
+  </bean>
+  <bean id="normalRequestDiscriminator" class="cn.xyz.chaos.mvc.abuse.discriminator.NormalRequestDiscriminator">
+  </bean>
+
+  <!-- AbuseHandler 处理器-->
+  <bean id="spiderHandler" class="cn.xyz.chaos.mvc.abuse.handler.SpiderHandler">
+  </bean>
+  <bean id="registeredIPHandler" class="cn.xyz.chaos.mvc.abuse.handler.RegisteredIPHandler">
+  </bean>
+  <bean id="ipSessionRateHandler" class="cn.xyz.chaos.mvc.abuse.handler.IPSessionRateHandler">
+    <property name="abuseLocker" ref="abuseLocker"/>
+    <property name="infoKeeper" ref="abuseInfoKeeper"/>
+    <property name="redirectUrl" value="/abuse/abuse/unlockview"/>
+    <!--IP 锁定时间-->
+    <property name="ipBlockTime" value="300"/>
+    <!--Session 锁定时间-->
+    <property name="sessionBlockTime" value="180"/>
+    <property name="ipSessionCreateCheckMap">
+      <map>
+        <!--个数，秒-->
+        <entry key="8" value="1"/>
+        <entry key="20" value="4"/>
+        <entry key="50" value="20"/>
+        <entry key="80" value="60"/>
+        <entry key="120" value="180"/>
+        <entry key="200" value="600"/>
+        <entry key="300" value="1800"/>
+        <entry key="420" value="4200"/>
+        <entry key="500" value="7200"/>
+        <entry key="700" value="9000"/>
+        <entry key="1000" value="28800"/>
+        <!--8小时-->
+        <entry key="1500" value="50400"/>
+        <!--14小时-->
+        <entry key="2000" value="86400"/>
+        <!--24小时-->
+      </map>
+    </property>
+    <property name="ipVisitCheckMap">
+      <map>
+        <!--次数，秒-->
+        <entry key="100" value="1"/>
+        <entry key="1000" value="100"/>
+        <entry key="7200" value="3600"/>
+        <entry key="20000" value="20000"/>
+        <entry key="50000" value="86400"/>
+      </map>
+    </property>
+    <property name="sessionVisitCheckMap">
+      <map>
+        <!--次数，秒-->
+        <entry key="5" value="1"/>
+        <entry key="60" value="60"/>
+        <entry key="180" value="360"/>
+        <entry key="250" value="600"/>
+        <entry key="300" value="900"/>
+        <entry key="350" value="1200"/>
+        <entry key="400" value="1800"/>
+        <entry key="600" value="3600"/>
+        <entry key="900" value="9000"/>
+        <entry key="1400" value="28800"/>
+        <entry key="2000" value="50400"/>
+        <entry key="3000" value="86400"/>
+      </map>
+    </property>
+  </bean>
+
+
+  <mvc:interceptors>
+    <bean class="cn.xyz.chaos.mvc.abuse.integration.AbuseInterceptor">
+      <property name="abuseManager" ref="abuseManager"/>
+    </bean>
+  </mvc:interceptors>
+
+</beans>
