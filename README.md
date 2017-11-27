@@ -1,11 +1,12 @@
-# Chaos Dev
-卡俄斯，根据Chaos ['keiɔs] 的读音翻译过来，指的是希腊神谱中的第一个神，也就是原始天神，也称为混沌天神
+# OASIS Dev
+基础开发框架
 
-目前项目没有安装到任何公共仓库，试用需要安装到本地！
-安装方法：
-
-* clone 到本地后，执行 support/install.bat 安装
-
-生成新项目：
-
-* 安装后执行 support/generate-project.bat，并根据提示输入groupId，artifactId，version和package(包名，非打包方式)
+说明如下:
+- oasis-common: 公共包
+- oasis-dubbo: dubbo bug修复及功能扩展
+- oasis-mq: 消息平台封装
+- oasis-orm: mybatis封装, 扩展mybator, 提供分页插件等等
+- oasis-validator: EasyValidator校验框架
+- oasis-web: web相关的扩展, 包括滥用检测, shiro集成, 分布式session,防止表单重复提交,JSP标签等等
+- oasis-web-quickstart: 小示例
+- oasis-web-showcase: 百宝箱, 里面有使用说明
